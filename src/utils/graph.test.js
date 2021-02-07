@@ -1,21 +1,5 @@
 import Graph from './graph';
 
-// beforeEach(() => {
-//     initializeCityDatabase();
-// });
-
-// afterEach(() => {
-//     clearCityDatabase();
-// });
-
-// beforeAll(() => {
-//     return initializeCityDatabase();
-// });
-
-// afterAll(() => {
-//     return clearCityDatabase();
-// });
-
 test('this should pass', () => {
     expect(null).toBeNull();
 });
