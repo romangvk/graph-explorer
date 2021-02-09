@@ -1,0 +1,25 @@
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #f7ece1;
+}
+
+.link {
+    stroke:#cac4ce;
+}
+  
+.node text {
+    stroke:#242038;
+    cursor: pointer;
+}
+  
+.node circle{
+    stroke:#8d86c9;
+    stroke-width:3px;
+    fill:#725ac1;
+    cursor: pointer;
+    box-shadow: 2px 2px 2px 10px rgba(255, 255, 255, 0.5);
+}
