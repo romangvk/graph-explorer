@@ -11,9 +11,9 @@ function GraphDisplay({ nodes, links }) {
 
         let force = d3.forceSimulation(nodes)
             .force("gravity", d3.forceManyBody())
-            .force("link", d3.forceLink(links))
-            .force("centerX", d3.forceX().strength(0.05))
-            .force("centerY", d3.forceY().strength(0.05))
+            .force("link", d3.forceLink(links).strength(0.05))
+            .force("centerX", d3.forceX().strength(0.01))
+            .force("centerY", d3.forceY().strength(0.01))
             .alphaDecay(0);
 
         let link = svg.selectAll(".link")
