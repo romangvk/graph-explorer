@@ -6,7 +6,6 @@ function GraphDisplay({ nodes, links }) {
     const display = useRef(null);
 
     useEffect(() => {
-        console.log(nodes.length);
         let svg = d3.select(display.current);
 
         let force = d3.forceSimulation(nodes)
@@ -17,47 +16,51 @@ function GraphDisplay({ nodes, links }) {
             .alphaDecay(0);
 
         let link = svg.selectAll(".link")
-            .data(links)
-            .enter().append("line")
+            .data(links);
+
+        link.exit().transition().ease(d3.easeExpOut).style("opacity", 0).style("stroke-width", 0).duration(500).remove();
+
+        let line = link.enter().append("line")
             .attr("class", "link")
             .style("stroke-width", 3);
 
         let node = svg.selectAll(".node")
-            .data(nodes)
-            .enter().append("g")
-            .attr("class", "node");
+            .data(nodes, (d) => d.id);
 
-        node.call(d3.drag()
-            .on("start", (event, d) => {
-                if (!event.active) force.alphaTarget(0.3).restart();
-                d.fx = d.x;
-                d.fy = d.y;
-            })
-            .on("drag", (event, d) => {
-                d.fx = event.x;
-                d.fy = event.y;
-            })
-            .on("end", (event, d) => {
-                if (!event.active) force.alphaTarget(0);
-                d.fx = null;
-                d.fy = null;
-            }));
+        node.exit().transition().ease(d3.easeExpOut).style("opacity", 0).selectAll("circle").attr("r", "0").duration(500).remove();
 
-        node.append("circle")
+        let g = node.enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", (event, d) => {
+                    if (!event.active) force.alphaTarget(0.3).restart();
+                    d.fx = d.x;
+                    d.fy = d.y;
+                })
+                .on("drag", (event, d) => {
+                    d.fx = event.x;
+                    d.fy = event.y;
+                })
+                .on("end", (event, d) => {
+                    if (!event.active) force.alphaTarget(0);
+                    d.fx = null;
+                    d.fy = null;
+                }));
+
+        g.append("circle")
             .attr("r", "4");
-
-        node.append("text")
+        g.append("text")
             .attr("dx", "1em")
             .attr("dy", ".35em")
-            .text((d) => { return d.v });
+            .text((d) => { console.log(d.v); return d.v });
 
         force.on("tick", function () {
-            link.attr("x1", (d) => { return d.source.x; })
+            line.attr("x1", (d) => { return d.source.x; })
                 .attr("y1", (d) => { return d.source.y; })
                 .attr("x2", (d) => { return d.target.x; })
                 .attr("y2", (d) => { return d.target.y; });
 
-            node.attr("transform", (d) => { return "translate(" + d.x + "," + d.y + ")"; });
+            g.attr("transform", (d) => { return "translate(" + d.x + "," + d.y + ")"; });
         });
         const resize = () => {
             let width = window.innerWidth, height = window.innerHeight;
