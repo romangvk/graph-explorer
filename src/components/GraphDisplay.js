@@ -52,7 +52,7 @@ function GraphDisplay({ nodes, links }) {
         g.append("text")
             .attr("dx", "1em")
             .attr("dy", ".35em")
-            .text((d) => { console.log(d.v); return d.v });
+            .text((d) => { return d.v });
 
         force.on("tick", function () {
             line.attr("x1", (d) => { return d.source.x; })
@@ -75,9 +75,7 @@ function GraphDisplay({ nodes, links }) {
         resize();
     });
     return (
-        <div className="svg-container">
-            <svg ref={display} />
-        </div>
+        <svg ref={display} />
     );
 }
 export default GraphDisplay;
