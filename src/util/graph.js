@@ -8,9 +8,9 @@ export function create() {
 }
 /**
 * Add a node to a graph
-* @param  {Object} g  The graph
+* @param  {Object} g     The graph
 * @param  {...any} value The value for the new node
-* @return {Object}    A new graph containing the new node
+* @return {Object}       A new graph containing the new node
 */
 export function addNode(g, ...value) {
     // Create new nodes for each value
@@ -22,9 +22,9 @@ export function addNode(g, ...value) {
 }
 /**
 * Remove a node from a graph
-* @param  {Object} g The graph
-* @param  {any} id   The id of the node to be removed
-* @return {Object}   A new graph that does not contain the node or any edges with the node
+* @param  {Object} g  The graph
+* @param  {number} id The id of the node to be removed
+* @return {Object}    A new graph that does not contain the node or any edges with the node
 */
 export function removeNode(g, id) {
     // Remove the node from the nodes list
@@ -35,4 +35,15 @@ export function removeNode(g, id) {
 
     // Return a new graph with the updated node and link list
     return { ...g, nodes: nodes, links: links, n: nodes.length };
+}
+/**
+* Add a link to a graph
+* @param  {Object} g        The graph
+* @param  {number} source   The id of the source node
+* @param  {number} target   The id of the source node
+* @param  {...number} links Additional source, target pairs to be added as links
+* @return {Object}          A new graph containing a link between source and target nodes
+*/
+export function addLink(g, source, target, ...links) {
+    return g;
 }
