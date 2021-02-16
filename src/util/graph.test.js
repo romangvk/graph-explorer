@@ -75,3 +75,33 @@ describe('removeNode', () => {
         expect(g.n).toBe(0);
     });
 });
+describe('addLink', () => {
+    let g;
+    beforeAll(() => {
+        g = G.addNode(G.create(), 0, 1, 2, 3);
+    });
+    afterAll(() => {
+        g = null;
+    });
+    test('adding a link', () => {
+        g = G.addLink(g, 0, 1);
+        expect(g.links.length).toBe(1);
+        expect(g.links).toContainEqual({ source: 0, target: 1 });
+    });
+    test('adding the same link', () => {
+        g = G.addLink(g, 0, 1);
+        expect(g.links.length).toBe(1);
+        expect(g.links).toContainEqual({ source: 0, target: 1 });
+    });
+    test('adding a different link', () => {
+        g = G.addLink(g, 1, 2);
+        expect(g.links.length).toBe(2);
+        expect(g.links).toContainEqual({ source: 1, target: 2 });
+    });
+    test('adding multiple links', () => {
+        g = G.addLink(g, 0, 2, 2, 3);
+        expect(g.links.length).toBe(4);
+        expect(g.links).toContainEqual({ source: 0, target: 2 });
+        expect(g.links).toContainEqual({ source: 2, target: 3 });
+    });
+})
