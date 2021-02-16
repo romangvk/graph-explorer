@@ -1,13 +1,38 @@
-export default class graph {
-    constructor() {
-        this.unused = [];
-    }
-    addNode(g, value) {
-        return { ...g, nodes: [...g.nodes, { v: value, id: unused[0] ? unused.pop() : g.nodes.length }] };
-    }
-    removeNode(g, id) {
-        let nodes = g.nodes.filter((node) => node.id !== id);
-        let links = g.links.filter((link) => link.source.id !== id && link.target.id !== id);
-        return { ...g, nodes: nodes, links: links };
-    }
+/**
+* Creates a new graph object
+* @return {Object} A new graph
+*/
+export function create() {
+    // Return a new graph with no nodes or links
+    return { nodes: [], links: [], id: 0, n: 0 };
+}
+/**
+* Add a node to a graph
+* @param  {Object} g  The graph
+* @param  {...any} value The value for the new node
+* @return {Object}    A new graph containing the new node
+*/
+export function addNode(g, ...value) {
+    // Create new nodes for each value
+    let id = g.id;
+    let nodes = value.map((v) => { return { v: v, id: id++ } });
+
+    // Return a new graph with the new nodes in g.nodes
+    return { ...g, nodes: [...g.nodes, ...nodes], id: id, n: g.n + nodes.length };
+}
+/**
+* Remove a node from a graph
+* @param  {Object} g The graph
+* @param  {any} id   The id of the node to be removed
+* @return {Object}   A new graph that does not contain the node or any edges with the node
+*/
+export function removeNode(g, id) {
+    // Remove the node from the nodes list
+    let nodes = g.nodes.filter((node) => node.id !== id);
+
+    // Remove any links with the node
+    let links = g.links.filter((link) => link.source.id !== id && link.target.id !== id);
+
+    // Return a new graph with the updated node and link list
+    return { ...g, nodes: nodes, links: links, n: nodes.length };
 }
