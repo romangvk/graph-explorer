@@ -1,7 +1,7 @@
 svg {
-    width: 100%;
-    height: 100%;
-    background: #f7ece1;
+    width: 99vw;
+    height: 99vh;
+    overflow: hidden;
 }
 
 .link {
