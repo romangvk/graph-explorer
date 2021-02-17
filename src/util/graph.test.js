@@ -46,35 +46,6 @@ describe('addNode', () => {
         expect(g.n).toBe(6);
     });
 });
-describe('removeNode', () => {
-    let g;
-    beforeAll(() => {
-        g = G.addNode(G.create(), 0, 1);
-    });
-    afterAll(() => {
-        g = null;
-    });
-    test('removing a node', () => {
-        g = G.removeNode(g, 0);
-        expect(g.nodes.length).toBe(1);
-        expect(g.nodes).not.toContainEqual({ id: 0, v: 0 });
-        expect(g.nodes).toContainEqual({ id: 1, v: 1 });
-        expect(g.n).toBe(1);
-    });
-    test('removing a node not in the graph', () => {
-        g = G.removeNode(g, -1);
-        expect(g.nodes.length).toBe(1);
-        expect(g.n).toBe(1);
-        g = G.removeNode(g, 2);
-        expect(g.nodes.length).toBe(1);
-        expect(g.n).toBe(1);
-    });
-    test('removing the last node', () => {
-        g = G.removeNode(g, 1);
-        expect(g.nodes.length).toBe(0);
-        expect(g.n).toBe(0);
-    });
-});
 describe('addLink', () => {
     let g;
     beforeAll(() => {
@@ -93,6 +64,11 @@ describe('addLink', () => {
         expect(g.links.length).toBe(1);
         expect(g.links).toContainEqual({ source: 0, target: 1 });
     });
+    test('adding a link between nodes not in the graph', () => {
+        g = G.addLink(g, 4, 5);
+        expect(g.links.length).toBe(1);
+        expect(g.links).toContainEqual({ source: 0, target: 1 });
+    });
     test('adding a different link', () => {
         g = G.addLink(g, 1, 2);
         expect(g.links.length).toBe(2);
@@ -104,4 +80,60 @@ describe('addLink', () => {
         expect(g.links).toContainEqual({ source: 0, target: 2 });
         expect(g.links).toContainEqual({ source: 2, target: 3 });
     });
-})
+});
+describe('removeNode', () => {
+    let g;
+    beforeAll(() => {
+        g = G.addLink(G.addNode(G.create(), 0, 1, 2), 0, 1, 1, 2, 0, 2);
+    });
+    afterAll(() => {
+        g = null;
+    });
+    test('removing a node', () => {
+        g = G.removeNode(g, 0);
+        expect(g.nodes.length).toBe(2);
+        expect(g.nodes).not.toContainEqual({ id: 0, v: 0 });
+        expect(g.nodes).toContainEqual({ id: 1, v: 1 });
+        expect(g.nodes).toContainEqual({ id: 2, v: 2 });
+        expect(g.n).toBe(2);
+        expect(g.links.length).toBe(1);
+        expect(g.links).not.toContainEqual({ source: 0, target: 1 });
+        expect(g.links).not.toContainEqual({ source: 0, target: 2 });
+    });
+    test('removing a node not in the graph', () => {
+        g = G.removeNode(g, -1);
+        expect(g.nodes.length).toBe(2);
+        expect(g.n).toBe(2);
+        g = G.removeNode(g, 3);
+        expect(g.nodes.length).toBe(2);
+        expect(g.n).toBe(2);
+    });
+    test('removing multiple nodes', () => {
+        g = G.removeNode(g, 1, 2);
+        expect(g.nodes.length).toBe(0);
+        expect(g.n).toBe(0);
+        expect(g.links.length).toBe(0);
+    });
+});
+describe('removeLink', () => {
+    let g;
+    beforeAll(() => {
+        g = G.addLink(G.addNode(G.create(), 0, 1, 2, 3), 0, 1, 1, 2, 2, 3);
+    });
+    afterAll(() => {
+        g = null;
+    });
+    test('removing a link', () => {
+        g = G.removeLink(g, 0, 1);
+        expect(g.links.length).toBe(2);
+        expect(g.links).not.toContainEqual({ source: 0, target: 1 });
+    });
+    test('removing a link not in the graph', () => {
+        g = G.removeLink(g, 3, 0);
+        expect(g.links.length).toBe(2);
+    });
+    test('removing multiple links', () => {
+        g = G.removeLink(g, 1, 2, 2, 3);
+        expect(g.links.length).toBe(0);
+    });
+});
