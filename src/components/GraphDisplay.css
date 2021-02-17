@@ -6,6 +6,7 @@ svg {
 
 .link {
     stroke:#cac4ce;
+    stroke-width: 3px;
 }
   
 .node text {
