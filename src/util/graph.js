@@ -23,27 +23,82 @@ export function addNode(g, ...value) {
 /**
 * Remove a node from a graph
 * @param  {Object} g  The graph
-* @param  {number} id The id of the node to be removed
-* @return {Object}    A new graph that does not contain the node or any edges with the node
+* @param  {...number} id The id of the node to be removed
+* @return {Object}    A new graph that does not contain the node or any links with the node
 */
-export function removeNode(g, id) {
-    // Remove the node from the nodes list
-    let nodes = g.nodes.filter((node) => node.id !== id);
+export function removeNode(g, ...id) {
+    // Put ids in a map for constant lookup
+    let map = {}
+    for (const i of id)
+        map[i] = true;
+
+    // Remove the nodes from the nodes list
+    let nodes = g.nodes.filter((node) => !map[node.id]);
 
     // Remove any links with the node
-    let links = g.links.filter((link) => link.source.id !== id && link.target.id !== id);
+    let links = g.links.filter((link) => !map[link.source.id] && !map[link.target.id] && !map[link.source] && !map[link.target]);
 
     // Return a new graph with the updated node and link list
     return { ...g, nodes: nodes, links: links, n: nodes.length };
 }
 /**
 * Add a link to a graph
-* @param  {Object} g        The graph
-* @param  {number} source   The id of the source node
-* @param  {number} target   The id of the source node
-* @param  {...number} links Additional source, target pairs to be added as links
-* @return {Object}          A new graph containing a link between source and target nodes
+* @param  {Object} g       The graph
+* @param  {...number} link The source, target pair to be added
+* @return {Object}         A new graph containing a link between source and target
 */
-export function addLink(g, source, target, ...links) {
-    return g;
+export function addLink(g, ...link) {
+    // Put ids in a map for constant lookup
+    let map = {}
+    for (const node of g.nodes) {
+        map[node.id] = true;
+    }
+
+    // Add valid links to a list
+    let links = []
+    for (let i = 1; i < link.length; i += 2) {
+        let source = link[i - 1];
+        let target = link[i];
+
+        // Check that the link is between two valid nodes
+        if (map[source] && map[target]) {
+            // Check that the link doesn't already exist
+            if (g.links.reduce((acc, cur) => {
+                return acc &&
+                    !(cur.source.id === source && cur.target.id === target) &&
+                    !(cur.source === source && cur.target === target);
+            }, true)) {
+                // Add the link to the list
+                links.push({ source: source, target: target });
+            }
+        }
+    }
+    // Return a new graph with the new links in g.links
+    return { ...g, links: [...g.links, ...links] };
+}
+/**
+* Remove a link from a graph
+* @param  {Object} g       The graph
+* @param  {...number} link The source, target pair to be removed
+* @return {Object}         A new graph that does not contain a link between source and target
+*/
+export function removeLink(g, ...link) {
+    // Put all links in a map for constant lookup
+    let map = {};
+    for (let i = 1; i < link.length; i += 2) {
+        let source = link[i - 1];
+        let target = link[i];
+        if (!map[source])
+            map[source] = {};
+        map[source][target] = true;
+    }
+
+    // Remove all links
+    let links = g.links.filter((link) =>
+        !(map[link.source.id] && map[link.source.id][link.target.id])
+        && !(map[link.source] && map[link.source][link.target])
+    );
+
+    // Return a new graph with the new links in g.links
+    return { ...g, links: links };
 }
