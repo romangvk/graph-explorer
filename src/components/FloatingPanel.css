@@ -1,0 +1,6 @@
+.floating {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
