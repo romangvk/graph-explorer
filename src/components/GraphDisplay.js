@@ -6,7 +6,7 @@ function GraphDisplay({ nodes, links }) {
     const display = useRef(null);
 
     useEffect(() => {
-        let svg = d3.select(display.current);
+        let svg = d3.select(display.current).attr("width", "100%").attr("height", "100%");
 
         let force = d3.forceSimulation(nodes)
             .force("gravity", d3.forceManyBody())
@@ -63,10 +63,8 @@ function GraphDisplay({ nodes, links }) {
             g.attr("transform", (d) => { return "translate(" + d.x + "," + d.y + ")"; });
         });
         const resize = () => {
-            let width = window.innerWidth, height = window.innerHeight;
-            svg.attr("width", width).attr("height", height);
-            force.force("centerX").x(width / 2);
-            force.force("centerY").y(height / 2);
+            force.force("centerX").x(window.innerWidth / 2);
+            force.force("centerY").y(window.innerHeight / 2);
             force.alpha(1).restart();
         }
         window.addEventListener("resize", () => {
