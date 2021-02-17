@@ -4,36 +4,71 @@ import * as d3 from 'd3';
 
 function GraphDisplay({ nodes, links }) {
     const display = useRef(null);
+    const force = useRef(null);
 
+    // Only runs once
     useEffect(() => {
-        let svg = d3.select(display.current).attr("width", "100%").attr("height", "100%");
-
-        let force = d3.forceSimulation(nodes)
+        // Create force
+        force.current = d3.forceSimulation()
             .force("gravity", d3.forceManyBody())
-            .force("link", d3.forceLink(links).strength(0.05))
+            .force("links", d3.forceLink().id((d) => d.id).strength(0.05))
             .force("centerX", d3.forceX().strength(0.01))
             .force("centerY", d3.forceY().strength(0.01))
             .alphaDecay(0);
 
-        let link = svg.selectAll(".link")
-            .data(links);
+        // Svg reference
+        let svg = d3.select(display.current);
 
-        link.exit().transition().ease(d3.easeExpOut).style("opacity", 0).style("stroke-width", 0).duration(500).remove();
+        // Move nodes and links every tick
+        force.current.on("tick", function () {
+            svg.selectAll(".link")
+                .attr("x1", (d) => { return d.source.x; })
+                .attr("y1", (d) => { return d.source.y; })
+                .attr("x2", (d) => { return d.target.x; })
+                .attr("y2", (d) => { return d.target.y; });
 
-        let line = link.enter().append("line")
-            .attr("class", "link")
-            .style("stroke-width", 3);
+            svg.selectAll(".node").attr("transform", (d) => { return "translate(" + d.x + "," + d.y + ")"; });
+        });
 
-        let node = svg.selectAll(".node")
-            .data(nodes, (d) => d.id);
+        // Recalculate centering forces on resize
+        const resize = () => {
+            let container = display.current.getBoundingClientRect();
+            force.current.force("centerX").x(container.width / 2);
+            force.current.force("centerY").y(container.height / 2);
+            force.current.alpha(1).restart();
+        }
+        window.addEventListener("resize", () => {
+            resize();
+        });
+        resize();
+    }, []);
 
-        node.exit().transition().ease(d3.easeExpOut).style("opacity", 0).selectAll("circle").attr("r", "0").duration(500).remove();
+    // Runs when nodes or links change
+    useEffect(() => {
+        // Svg reference
+        let svg = d3.select(display.current);
 
+        // Draw links
+        let link = svg.selectAll(".link").data(links, (d) => d.id);
+
+        // Animate removed links
+        link.exit().transition().ease(d3.easeExpOut).style("opacity", 0).duration(500).remove();
+
+        // Create new links
+        link.enter().insert("line", ":first-child").attr("class", "link");
+
+        // Draw nodes
+        let node = svg.selectAll(".node").data(nodes, (d) => d.id);
+
+        // Animate removed nodes
+        node.exit().transition().ease(d3.easeExpOut).style("opacity", 0).duration(500).remove();
+
+        // Create new nodes
         let g = node.enter().append("g")
             .attr("class", "node")
             .call(d3.drag()
                 .on("start", (event, d) => {
-                    if (!event.active) force.alphaTarget(0.3).restart();
+                    if (!event.active) force.current.alphaTarget(0.3).restart();
                     d.fx = d.x;
                     d.fy = d.y;
                 })
@@ -42,38 +77,28 @@ function GraphDisplay({ nodes, links }) {
                     d.fy = event.y;
                 })
                 .on("end", (event, d) => {
-                    if (!event.active) force.alphaTarget(0);
+                    if (!event.active) force.current.alphaTarget(0);
                     d.fx = null;
                     d.fy = null;
                 }));
 
-        g.append("circle")
-            .attr("r", "4");
+        // Draw dircle
+        g.append("circle").attr("r", 4);
+
+        // Draw text
         g.append("text")
             .attr("dx", "1em")
             .attr("dy", ".35em")
-            .text((d) => { return d.v });
+            .merge(node.select("text"))
+            .text((d) => d.v);
 
-        force.on("tick", function () {
-            line.attr("x1", (d) => { return d.source.x; })
-                .attr("y1", (d) => { return d.source.y; })
-                .attr("x2", (d) => { return d.target.x; })
-                .attr("y2", (d) => { return d.target.y; });
-
-            g.attr("transform", (d) => { return "translate(" + d.x + "," + d.y + ")"; });
-        });
-        const resize = () => {
-            force.force("centerX").x(window.innerWidth / 2);
-            force.force("centerY").y(window.innerHeight / 2);
-            force.alpha(1).restart();
-        }
-        window.addEventListener("resize", () => {
-            resize();
-        });
-        resize();
-    });
+        // Reinitialize force
+        force.current.nodes(nodes);
+        force.current.force("links").links(links).id((d) => d.id);
+        force.current.restart();
+    }, [nodes, links]);
     return (
-        <svg ref={display} />
+        <svg ref={display} width="100%" height="100%" />
     );
 }
 export default GraphDisplay;
