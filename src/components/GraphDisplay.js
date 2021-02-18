@@ -8,6 +8,16 @@ function GraphDisplay({ nodes, links, onClickNode }) {
     const display = useRef(null);
     const force = useRef(null);
 
+    // Bounding box
+    const boundX = (x) => {
+        let container = display.current.getBoundingClientRect();
+        return Math.max(Math.min(container.width - radius, x), 0 + radius);
+    }
+    const boundY = (y) => {
+        let container = display.current.getBoundingClientRect();
+        return Math.max(Math.min(container.height - radius, y), 0 + radius);
+    }
+
     // Only runs once
     useEffect(() => {
         // Create force
@@ -21,23 +31,13 @@ function GraphDisplay({ nodes, links, onClickNode }) {
         // Svg reference
         let svg = d3.select(display.current);
 
-        // Bounding box
-        const boundX = (x) => {
-            let container = display.current.getBoundingClientRect();
-            return Math.max(Math.min(container.width - radius, x), 0 + radius);
-        }
-        const boundY = (y) => {
-            let container = display.current.getBoundingClientRect();
-            return Math.max(Math.min(container.height - radius, y), 0 + radius);
-        }
-
         // Move nodes and links every tick
         force.current.on("tick", function () {
             svg.selectAll(".link")
                 .attr("x1", (d) => { return boundX(d.source.x); })
-                .attr("y1", (d) => { return boundX(d.source.y); })
+                .attr("y1", (d) => { return boundY(d.source.y); })
                 .attr("x2", (d) => { return boundX(d.target.x); })
-                .attr("y2", (d) => { return boundX(d.target.y); });
+                .attr("y2", (d) => { return boundY(d.target.y); });
 
             svg.selectAll(".node").attr("transform", (d) => {
                 return "translate(" + boundX(d.x) + "," + boundY(d.y) + ")";
