@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 
 let radius = 4;
 
-function GraphDisplay({ nodes, links }) {
+function GraphDisplay({ nodes, links, onClickNode }) {
     const display = useRef(null);
     const force = useRef(null);
 
@@ -108,6 +108,12 @@ function GraphDisplay({ nodes, links }) {
         force.current.force("links").links(links);
     }, [nodes, links]);
 
+    // Runs when onClickNode changes
+    useEffect(() => {
+        d3.selectAll("g").on("click", (e, d) => {
+            onClickNode(d);
+        })
+    }, [onClickNode])
     return (
         <svg ref={display} width="100%" height="100%" />
     );
