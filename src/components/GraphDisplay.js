@@ -2,6 +2,8 @@ import './GraphDisplay.css';
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
+let radius = 4;
+
 function GraphDisplay({ nodes, links }) {
     const display = useRef(null);
     const force = useRef(null);
@@ -11,9 +13,12 @@ function GraphDisplay({ nodes, links }) {
         // Create force
         force.current = d3.forceSimulation()
             .force("gravity", d3.forceManyBody())
-            .force("links", d3.forceLink().id((d) => d.id).strength(0.05))
-            .force("centerX", d3.forceX().strength(0.01))
-            .force("centerY", d3.forceY().strength(0.01))
+            .force("links", d3.forceLink().strength(0.05))
+            .force("centerX", d3.forceX().strength(0.005))
+            .force("centerY", d3.forceY().strength(0.005))
+            .force("bounds", (alpha) => {
+
+            })
             .alphaDecay(0);
 
         // Svg reference
@@ -27,7 +32,13 @@ function GraphDisplay({ nodes, links }) {
                 .attr("x2", (d) => { return d.target.x; })
                 .attr("y2", (d) => { return d.target.y; });
 
-            svg.selectAll(".node").attr("transform", (d) => { return "translate(" + d.x + "," + d.y + ")"; });
+            // Bounding box
+            svg.selectAll(".node").attr("transform", (d) => {
+                let container = display.current.getBoundingClientRect();
+                let x = Math.max(Math.min(container.width - radius, d.x), 0 + radius);
+                let y = Math.max(Math.min(container.height - radius, d.y), 0 + radius);
+                return "translate(" + x + "," + y + ")";
+            });
         });
 
         // Recalculate centering forces on resize
@@ -82,8 +93,8 @@ function GraphDisplay({ nodes, links }) {
                     d.fy = null;
                 }));
 
-        // Draw dircle
-        g.append("circle").attr("r", 4);
+        // Draw circle
+        g.append("circle").attr("r", radius);
 
         // Draw text
         g.append("text")
@@ -94,9 +105,9 @@ function GraphDisplay({ nodes, links }) {
 
         // Reinitialize force
         force.current.nodes(nodes);
-        force.current.force("links").links(links).id((d) => d.id);
-        force.current.restart();
+        force.current.force("links").links(links);
     }, [nodes, links]);
+
     return (
         <svg ref={display} width="100%" height="100%" />
     );
