@@ -1,7 +1,7 @@
 import './FloatingPanel.css';
 import React from 'react';
 
-function FloatingPanel({ children, top, bottom, left, right }) {
+function FloatingPanel({ children }) {
     return (
         <div className="floating">
             {children}
