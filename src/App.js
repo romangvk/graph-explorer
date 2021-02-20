@@ -7,6 +7,7 @@ import * as G from './util/graph';
 function App() {
   const [graph, setGraph] = useState(G.addLink(G.addNode(G.create(), 0, 1, 2), 1, 2, 2, 0));
   const nodeRefs = useRef({})
+
   return (
     <div className="App">
       <FloatingPanel>
@@ -16,26 +17,31 @@ function App() {
             return G.addNode(old, value);
           });
         }}>Add Node</button>
-        {graph.nodes.map((node, i) => {
-          return (
-            <input key={i} ref={(el) => (nodeRefs.current[node.id] = el)} type="text" value={node.v} onChange={(e) => {
-              setGraph((old) => {
-                let nodes = [...old.nodes];
-                nodes[i].v = e.target.value;
-                return { ...old, nodes: nodes };
-              });
-            }}></input>
-          );
-        })}
-        <button onClick={() => {
-          setGraph((old) => G.removeNode(old, 0));
-        }}>Remove Node</button>
+        <div className="nodes">
+          {graph.nodes.map((node, i) => {
+            return (
+              <div className="node">
+                <input ref={(el) => (nodeRefs.current[node.id] = el)} type="text" value={node.v} onChange={(e) => {
+                  setGraph((old) => {
+                    let nodes = [...old.nodes];
+                    nodes[i].v = e.target.value;
+                    return { ...old, nodes: nodes };
+                  });
+                }}></input>
+                <button onClick={() => {
+                  setGraph((old) => G.removeNode(old, node.id));
+                }}>x</button>
+              </div>
+            );
+          })}
+        </div>
       </FloatingPanel>
       <GraphDisplay nodes={graph.nodes} links={graph.links}
         onClickNode={(d) => {
           nodeRefs.current[d.id].focus();
           nodeRefs.current[d.id].select();
-        }} />
+        }}
+      />
     </div >
   );
 }
