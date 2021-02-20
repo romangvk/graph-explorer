@@ -16,9 +16,6 @@ function GraphDisplay({ nodes, links, onClickNode }) {
             .force("links", d3.forceLink().strength(0.05))
             .force("centerX", d3.forceX().strength(0.005))
             .force("centerY", d3.forceY().strength(0.005))
-            .force("bounds", (alpha) => {
-
-            })
             .alphaDecay(0);
 
         // Svg reference
