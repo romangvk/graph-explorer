@@ -4,26 +4,25 @@ svg {
 }
 
 .link {
-    stroke:#cac4ce;
-    stroke-width: 3px;
+    stroke: #FF4081;
+    stroke-width: 2px;
 }
-  
+
 .node text {
-    stroke:#242038;
+    stroke: black;
     cursor: pointer;
 }
-  
-.node circle{
-    stroke:#8d86c9;
-    stroke-width:3px;
-    fill:#725ac1;
+
+.node circle {
+    fill: #FF4081;
     cursor: pointer;
     transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
+
 .node circle:hover {
     transform: scale(2, 2);
-    fill: white;
 }
+
 .node circle:active {
     transform: scale(1.5, 1.5);
 }
