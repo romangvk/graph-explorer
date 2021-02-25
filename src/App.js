@@ -1,7 +1,7 @@
-import './App.css';
+import './styles.css';
 import React, { useRef, useState } from 'react';
 import GraphDisplay from './components/GraphDisplay';
-import FloatingPanel from './components/FloatingPanel';
+import SidePanel from './components/SidePanel';
 import NodeEditor from './components/NodeEditor';
 import * as G from './util/graph';
 
@@ -12,7 +12,7 @@ function App() {
 
   return (
     <div className="App">
-      <FloatingPanel>
+      <SidePanel>
         <button onClick={() => {
           setGraph((old) => {
             let value = Math.floor(Math.random() * 100);
@@ -32,7 +32,7 @@ function App() {
             );
           })}
         </div>
-      </FloatingPanel>
+      </SidePanel>
       <GraphDisplay nodes={graph.nodes} links={graph.links}
       onClickNode={(d) => {
         nodeRefs.current[d.id].focus();
