@@ -18,13 +18,33 @@ export function addNode(g, ...value) {
     let nodes = value.map((v) => { return { v: v, id: id++ } });
 
     // Return a new graph with the new nodes in g.nodes
-    return { ...g, nodes: [...g.nodes, ...nodes], id: id, n: g.n + nodes.length };
+    return { ...g, nodes: [...g.nodes, ...nodes], id, n: g.n + nodes.length };
+}
+
+/**
+* Update a node's value
+* @param  {Object} g     The graph
+* @param  {number} id    The id of the node to be updated
+* @param  {...any} value The value for the node
+* @return {Object}       A new graph containing the updated node
+*/
+export function updateNode(g, id, value) {
+    let nodes = [...g.nodes];
+    let index = 0;
+    for(let node of nodes) {
+        if(node.v === id) {
+            index = node.index;
+            break;
+        }
+    }
+    nodes[index].v = value
+    return { ...g, nodes };
 }
 /**
 * Remove a node from a graph
-* @param  {Object} g  The graph
+* @param  {Object} g     The graph
 * @param  {...number} id The id of the node to be removed
-* @return {Object}    A new graph that does not contain the node or any links with the node
+* @return {Object}       A new graph that does not contain the node or any links with the node
 */
 export function removeNode(g, ...id) {
     // Put ids in a map for constant lookup
@@ -39,7 +59,7 @@ export function removeNode(g, ...id) {
     let links = g.links.filter((link) => !map[link.source.id] && !map[link.target.id] && !map[link.source] && !map[link.target]);
 
     // Return a new graph with the updated node and link list
-    return { ...g, nodes: nodes, links: links, n: nodes.length };
+    return { ...g, nodes, links, n: nodes.length };
 }
 /**
 * Add a link to a graph
@@ -69,7 +89,7 @@ export function addLink(g, ...link) {
                     !(cur.source === source && cur.target === target);
             }, true)) {
                 // Add the link to the list
-                links.push({ source: source, target: target });
+                links.push({ source, target });
             }
         }
     }
@@ -100,5 +120,5 @@ export function removeLink(g, ...link) {
     );
 
     // Return a new graph with the new links in g.links
-    return { ...g, links: links };
+    return { ...g, links };
 }
