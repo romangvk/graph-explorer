@@ -1,4 +1,4 @@
-import './styles.css';
+import './App.css';
 import React, { useRef, useState } from 'react';
 import GraphDisplay from './components/GraphDisplay';
 import NodeEditor from './components/NodeEditor';
