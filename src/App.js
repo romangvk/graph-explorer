@@ -16,7 +16,7 @@ function App() {
 
   return (
     <div className="App">
-      <FloatingPanel title="Nodes">
+      <FloatingPanel title="Nodes" top="1vh" left="1em">
         <NodeEditor value={addV} inputRef={addNodeRef}
           change={(v) => setAddV(v)}
           action={() => {
@@ -55,7 +55,7 @@ function App() {
           })}
         </div>
       </FloatingPanel>
-      <FloatingPanel title="Links">
+      <FloatingPanel title="Links" top="51vh" left="1em">
         <LinkEditor nodes={graph.nodes}
           icon={faPlus}
           action={(source, target) => {
