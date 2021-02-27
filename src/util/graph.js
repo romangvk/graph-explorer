@@ -31,14 +31,29 @@ export function addNode(g, ...value) {
 export function updateNode(g, id, value) {
     let nodes = [...g.nodes];
     let index = 0;
-    for(let node of nodes) {
-        if(node.v === id) {
+    for (let node of nodes) {
+        if (node.id === id) {
             index = node.index;
             break;
         }
     }
     nodes[index].v = value
     return { ...g, nodes };
+}
+/**
+* Check whether or not a node with a given value exists in a graph
+* @param  {Object} g     The graph
+* @param  {...any} value The value
+* @return {boolean}      Whether or not the graph vontains a node with the given value
+*/
+export function contains(g, value) {
+    let nodes = [...g.nodes];
+    for (let node of nodes) {
+        if (value === node.v) {
+            return true;
+        }
+    }
+    return false;
 }
 /**
 * Remove a node from a graph
