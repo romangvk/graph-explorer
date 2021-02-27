@@ -5,6 +5,7 @@ import NodeEditor from './components/NodeEditor';
 import LinkEditor from './components/LinkEditor';
 import * as G from './util/graph';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
+import FloatingPanel from './components/FloatingPanel';
 
 function App() {
   const [graph, setGraph] = useState(G.addLink(G.addNode(G.create(), 0, 1, 2), 1, 2, 2, 0));
@@ -14,53 +15,45 @@ function App() {
 
   return (
     <div className="App">
-      <div className="side-panel">
-        <div className="half-panel">
-          <div className="half-panel-title"><b>Nodes</b></div>
-          <div className="half-panel-content">
-            <NodeEditor value={addV} inputRef={addNodeRef}
-              change={(v) => setAddV(v)}
-              action={() => {
-                if (G.contains(graph, addV)) {
-                  console.log("Must be a new value");
-                } else {
-                  setGraph((old) => G.addNode(old, addV));
-                  setAddV("");
-                }
-                addNodeRef.current.focus();
-              }}
-              icon={faPlus} />
-            <div className="list">
-              {graph.nodes.map((node, i) => {
-                return (
-                  <NodeEditor key={i} value={node.v} inputRef={(el) => (nodeRefs.current[node.id] = el)}
-                    change={(v) => {
-                      G.contains(graph, v) ?
-                        setGraph((old) => { return { ...old } })
-                        :
-                        setGraph((old) => G.updateNode(old, node.id, v))
-                    }}
-                    action={() => setGraph((old) => G.removeNode(old, node.id))}
-                    icon={faTimes} />
-                );
-              })}
-            </div>
-          </div>
+      <FloatingPanel title="Nodes">
+        <NodeEditor value={addV} inputRef={addNodeRef}
+          change={(v) => setAddV(v)}
+          action={() => {
+            if (G.contains(graph, addV)) {
+              console.log("Must be a new value");
+            } else {
+              setGraph((old) => G.addNode(old, addV));
+              setAddV("");
+            }
+            addNodeRef.current.focus();
+          }}
+          icon={faPlus} />
+        <div className="list">
+          {graph.nodes.map((node, i) => {
+            return (
+              <NodeEditor key={i} value={node.v} inputRef={(el) => (nodeRefs.current[node.id] = el)}
+                change={(v) => {
+                  G.contains(graph, v) ?
+                    setGraph((old) => { return { ...old } })
+                    :
+                    setGraph((old) => G.updateNode(old, node.id, v))
+                }}
+                action={() => setGraph((old) => G.removeNode(old, node.id))}
+                icon={faTimes} />
+            );
+          })}
         </div>
-        <div className="half-panel">
-          <div className="half-panel-title"><b>Links</b></div>
-          <div className="half-panel-content">
-            <div className="list">
-              {graph.links.map((link, i) => {
-                return (
-                  <LinkEditor key={i} source={link.source.v} target={link.target.v}
-                    icon={faTimes} />
-                );
-              })}
-            </div>
-          </div>
+      </FloatingPanel>
+      <FloatingPanel title="Links">
+        <div className="list">
+          {graph.links.map((link, i) => {
+            return (
+              <LinkEditor key={i} source={link.source.v} target={link.target.v}
+                icon={faTimes} />
+            );
+          })}
         </div>
-      </div>
+      </FloatingPanel>
       <GraphDisplay nodes={graph.nodes} links={graph.links}
         onClickNode={(d) => {
           nodeRefs.current[d.id].focus();
