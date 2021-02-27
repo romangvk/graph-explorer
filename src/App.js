@@ -19,7 +19,7 @@ function App() {
         <NodeEditor value={addV} inputRef={addNodeRef}
           change={(v) => setAddV(v)}
           action={() => {
-            if (G.contains(graph, addV)) {
+            if (addV === "" || G.contains(graph, addV)) {
               console.log("Must be a new value");
             } else {
               setGraph((old) => G.addNode(old, addV));
@@ -28,6 +28,7 @@ function App() {
             addNodeRef.current.focus();
           }}
           icon={faPlus} />
+        <hr />
         <div className="list">
           {graph.nodes.map((node, i) => {
             return (
@@ -39,16 +40,39 @@ function App() {
                     setGraph((old) => G.updateNode(old, node.id, v))
                 }}
                 action={() => setGraph((old) => G.removeNode(old, node.id))}
+                enterAction={() => {
+                  if (i + 1 < graph.nodes.length) {
+                    nodeRefs.current[graph.nodes[i + 1].id].focus();
+                    nodeRefs.current[graph.nodes[i + 1].id].select();
+                    nodeRefs.current[graph.nodes[i + 1].id].scrollIntoView();
+                  } else {
+                    nodeRefs.current[node.id].blur();
+                  }
+                }}
                 icon={faTimes} />
             );
           })}
         </div>
       </FloatingPanel>
       <FloatingPanel title="Links">
+        <LinkEditor nodes={graph.nodes}
+          icon={faPlus} sourcePlaceholder="source" targetPlaceholder="target"
+          action={(source, target) => {
+            setGraph((old) => G.addLink(old, source, target));
+          }} />
+        <hr />
         <div className="list">
           {graph.links.map((link, i) => {
             return (
-              <LinkEditor key={i} source={link.source.v} target={link.target.v}
+              <LinkEditor key={i}
+                nodes={graph.nodes}
+                source={typeof link.source === 'number' ? link.source : link.source.id}
+                target={typeof link.target === 'number' ? link.target : link.target.id}
+                action={(source, target) => {
+                  setGraph((old) => {
+                    return G.removeLink(old, source, target);
+                  });
+                }}
                 icon={faTimes} />
             );
           })}
