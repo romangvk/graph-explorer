@@ -1,7 +1,7 @@
 import './LinkEditor.css';
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faArrowRight} from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 function NodeEditor({ change, action, enterAction, source, target, icon, inputRef }) {
     const enter = (event) => {
@@ -19,7 +19,7 @@ function NodeEditor({ change, action, enterAction, source, target, icon, inputRe
                 value={source}
                 onKeyDown={enter}
                 onChange={(e) => change(e.target.value)} />
-            <FontAwesomeIcon icon={faArrowRight} size="xs" fixedWidth/>
+            <FontAwesomeIcon icon={faArrowRight} size="xs" fixedWidth />
             <input
                 className="link"
                 placeholder="target"
