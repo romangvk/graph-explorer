@@ -1,0 +1,17 @@
+div.link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+div.link-value {
+    box-sizing: border-box;
+    width: 100%;
+    font-family: inherit;
+    font-size: smaller;
+    font-weight: bold;
+    margin: .3em;
+    padding: .5em;
+    overflow: hidden;
+}

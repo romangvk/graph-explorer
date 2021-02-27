@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import GraphDisplay from './components/GraphDisplay';
 import NodeEditor from './components/NodeEditor';
 import LinkEditor from './components/LinkEditor';
+import Link from './components/Link';
 import * as G from './util/graph';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import FloatingPanel from './components/FloatingPanel';
@@ -56,23 +57,22 @@ function App() {
       </FloatingPanel>
       <FloatingPanel title="Links">
         <LinkEditor nodes={graph.nodes}
-          icon={faPlus} sourcePlaceholder="source" targetPlaceholder="target"
+          icon={faPlus}
           action={(source, target) => {
             setGraph((old) => G.addLink(old, source, target));
           }} />
         <hr />
         <div className="list">
           {graph.links.map((link, i) => {
+            let sourceV = link.source.v != null ? link.source.v : link.source;
+            let targetV = link.target.v != null ? link.target.v : link.target;
+            let sourceId = link.source.id != null ? link.source.id : link.source;
+            let targetId = link.target.id != null ? link.target.id : link.target;
             return (
-              <LinkEditor key={i}
-                nodes={graph.nodes}
-                source={typeof link.source === 'number' ? link.source : link.source.id}
-                target={typeof link.target === 'number' ? link.target : link.target.id}
-                action={(source, target) => {
-                  setGraph((old) => {
-                    return G.removeLink(old, source, target);
-                  });
-                }}
+              <Link key={i}
+                source={sourceV}
+                target={targetV}
+                action={() => { setGraph((old) => G.removeLink(old, sourceId, targetId)) }}
                 icon={faTimes} />
             );
           })}
