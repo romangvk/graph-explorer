@@ -3,7 +3,7 @@ div.floating-panel {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    background: white;
+    background: #e3f2fd;
     height: auto;
     box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.2);
     border-radius: .3em;
