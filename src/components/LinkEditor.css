@@ -1,0 +1,12 @@
+div.link {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin-left: 1em;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+input.link {
+    text-align: center;
+}
