@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/graph-explorer/static/js/runtime~main.0e849903.js"
   },
   {
-    "revision": "d9be5a32247b0222ad5b",
-    "url": "/graph-explorer/static/js/main.6aa2a49e.chunk.js"
+    "revision": "ed24b10b262d9713bbcc",
+    "url": "/graph-explorer/static/js/main.2a3b4fdd.chunk.js"
   },
   {
     "revision": "617c77e487672baadda0",
@@ -16,11 +16,11 @@ self.__precacheManifest = [
     "url": "/graph-explorer/static/js/2.bb78ad4c.chunk.js"
   },
   {
-    "revision": "d9be5a32247b0222ad5b",
+    "revision": "ed24b10b262d9713bbcc",
     "url": "/graph-explorer/static/css/main.ce68b7b3.chunk.css"
   },
   {
-    "revision": "dc89d3504e9f32d89062a3ac9447a3be",
+    "revision": "da48ebc4b4c097976e220228b86c6368",
     "url": "/graph-explorer/index.html"
   }
 ];
