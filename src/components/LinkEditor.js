@@ -1,35 +1,30 @@
 import './LinkEditor.css';
-import React from 'react';
+import React, { useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
-function NodeEditor({ change, action, enterAction, source, target, icon, inputRef }) {
-    const enter = (event) => {
-        if (event.key === 'Enter') {
-            enterAction ? enterAction() : action();
-        }
-    }
+function LinkEditor({ change, action, source, target, icon, nodes }) {
+    const sourceRef = useRef();
+    const targetRef = useRef();
     return (
         <div className="link">
-            <input
-                className="link"
-                placeholder="source"
-                type="text"
-                ref={inputRef}
-                value={source}
-                onKeyDown={enter}
-                onChange={(e) => change(e.target.value)} />
-            <FontAwesomeIcon icon={faArrowRight} size="xs" fixedWidth />
-            <input
-                className="link"
-                placeholder="target"
-                type="text"
-                ref={inputRef}
-                value={target}
-                onKeyDown={enter}
-                onChange={(e) => change(e.target.value)} />
-            <div className="action"><FontAwesomeIcon icon={icon} size="xs" fixedWidth onClick={() => action()} /></div>
+            <select ref={sourceRef} className="link"
+                onChange={() => change && change(sourceRef.current.value, targetRef.current.value)}
+                defaultValue={source ? source : "source"}>
+                {nodes && nodes.map((node, i) => <option key={i} value={node.id}>{node.v}</option>)}
+            </select>
+            <FontAwesomeIcon icon={faArrowRight} fixedWidth />
+            <select ref={targetRef} className="link"
+                onChange={() => change && change(sourceRef.current.value, targetRef.current.value)}
+                defaultValue={target ? target : "target"}>
+                {nodes && nodes.map((node, i) => <option key={i} value={node.id}>{node.v}</option>)}
+            </select>
+            <div className="action"><FontAwesomeIcon icon={icon} fixedWidth
+                onClick={() => {
+                    action(parseInt(sourceRef.current.value, 10), parseInt(targetRef.current.value, 10));
+                }} />
+            </div>
         </div>
     );
 }
-export default NodeEditor;
+export default LinkEditor;
