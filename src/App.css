@@ -32,15 +32,15 @@ div.list {
 
 input {
     box-sizing: border-box;
-    border: none;
+    border: 1px solid #777;
     width: 100%;
     font-family: inherit;
     font-size: smaller;
     font-weight: bold;
-    background: transparent;
-    margin: 0;
+    background: white;
+    border-radius: .1em;
+    margin: .3em;
     padding: .5em;
-    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 input:focus {
@@ -54,6 +54,23 @@ input::selection {
 
 input::-moz-selection {
     background: #81d4fa;
+}
+
+select {
+    box-sizing: border-box;
+    border: 1px solid #777;
+    width: 100%;
+    font-family: inherit;
+    font-size: smaller;
+    font-weight: bold;
+    background: white;
+    border-radius: .1em;
+    margin: .3em;
+    padding: .5em;
+}
+
+select:focus {
+    outline: none;
 }
 
 .action {
