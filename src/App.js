@@ -64,10 +64,10 @@ function App() {
         <hr />
         <div className="list">
           {graph.links.map((link, i) => {
-            let sourceV = link.source.v != null ? link.source.v : link.source;
-            let targetV = link.target.v != null ? link.target.v : link.target;
             let sourceId = link.source.id != null ? link.source.id : link.source;
             let targetId = link.target.id != null ? link.target.id : link.target;
+            let sourceV = link.source.v != null ? link.source.v : G.value(graph, sourceId);
+            let targetV = link.target.v != null ? link.target.v : G.value(graph, targetId);
             return (
               <Link key={i}
                 source={sourceV}
