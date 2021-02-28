@@ -12,19 +12,18 @@ function App() {
   const [graph, setGraph] = useState(G.addLink(G.addNode(G.create(), 0, 1, 2), 1, 2, 2, 0));
   const nodeRefs = useRef({})
   const addNodeRef = useRef();
-  const [addV, setAddV] = useState("");
 
   return (
     <div className="App">
       <FloatingPanel title="Nodes" top="1vh" left="1em">
-        <NodeEditor value={addV} inputRef={addNodeRef}
-          change={(v) => setAddV(v)}
+        <NodeEditor inputRef={addNodeRef}
           action={() => {
-            if (addV === "" || G.contains(graph, addV)) {
+            let value = addNodeRef.current.value;
+            if (value === "" || G.contains(graph, value)) {
               console.log("Must be a new value");
             } else {
-              setGraph((old) => G.addNode(old, addV));
-              setAddV("");
+              setGraph((old) => G.addNode(old, value));
+              addNodeRef.current.value = "";
             }
             addNodeRef.current.focus();
           }}
@@ -77,6 +76,9 @@ function App() {
             );
           })}
         </div>
+      </FloatingPanel>
+      <FloatingPanel title="Options" bottom="1em" right="1em">
+        Options
       </FloatingPanel>
       <GraphDisplay nodes={graph.nodes} links={graph.links}
         onClickNode={(d) => {
