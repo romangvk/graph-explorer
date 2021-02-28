@@ -16,7 +16,7 @@ function NodeEditor({ change, action, enterAction, value, icon, inputRef }) {
                 ref={inputRef}
                 value={value}
                 onKeyDown={enter}
-                onChange={(e) => change(e.target.value)} />
+                onChange={change ? (e) => change(e.target.value) : null} />
             <div className="action"><FontAwesomeIcon icon={icon} fixedWidth onClick={() => action()} /></div>
         </div>
     );
