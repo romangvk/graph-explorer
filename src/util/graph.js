@@ -20,7 +20,15 @@ export function addNode(g, ...value) {
     // Return a new graph with the new nodes in g.nodes
     return { ...g, nodes: [...g.nodes, ...nodes], id, n: g.n + nodes.length };
 }
-
+/**
+* Get the value of a node with a certain id
+* @param  {Object} g     The graph
+* @param  {...any} value The value for the node
+* @return {any}       The value for the node
+*/
+export function value(g, id) {
+    return g.nodes.find((node) => node.id === id).v;
+}
 /**
 * Update a node's value
 * @param  {Object} g     The graph
