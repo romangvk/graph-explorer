@@ -23,7 +23,7 @@ function GraphDisplay({ nodes, links, onClickNode }) {
         // Create force
         force.current = d3.forceSimulation()
             .force("gravity", d3.forceManyBody())
-            .force("links", d3.forceLink().strength(0.05))
+            .force("links", d3.forceLink().strength(0.05).id((d) => d.id))
             .force("centerX", d3.forceX().strength(0.005))
             .force("centerY", d3.forceY().strength(0.005))
             .alphaDecay(0);
