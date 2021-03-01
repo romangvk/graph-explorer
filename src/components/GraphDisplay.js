@@ -2,20 +2,18 @@ import './GraphDisplay.css';
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
-let radius = 4;
-
-function GraphDisplay({ nodes, links, onClickNode }) {
+function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDistance }) {
     const display = useRef(null);
     const force = useRef(null);
 
     // Bounding box
     const boundX = (x) => {
         let container = display.current.getBoundingClientRect();
-        return Math.max(Math.min(container.width - radius, x), 0 + radius);
+        return Math.max(Math.min(container.width, x), 0);
     }
     const boundY = (y) => {
         let container = display.current.getBoundingClientRect();
-        return Math.max(Math.min(container.height - radius, y), 0 + radius);
+        return Math.max(Math.min(container.height, y), 0);
     }
 
     // Only runs once
@@ -92,12 +90,14 @@ function GraphDisplay({ nodes, links, onClickNode }) {
                 })
                 .on("end", (event, d) => {
                     if (!event.active) force.current.alphaTarget(0);
-                    d.fx = null;
-                    d.fy = null;
+                    if (!d.fixed) {
+                        d.fx = null;
+                        d.fy = null;
+                    }
                 }));
 
         // Draw circle
-        g.append("circle").attr("r", radius);
+        g.append("circle");
 
         // Draw text
         g.append("text")
@@ -110,6 +110,16 @@ function GraphDisplay({ nodes, links, onClickNode }) {
         force.current.nodes(nodes);
         force.current.force("links").links(links);
     }, [nodes, links]);
+
+    useEffect(() => {
+        d3.select(display.current).selectAll(".node").select("circle").attr("r", nodeSize || 4);
+    }, [nodeSize]);
+    useEffect(() => {
+        d3.select(display.current).selectAll(".link").attr("stroke-width", linkWidth || 2);
+    }, [linkWidth]);
+    useEffect(() => {
+        force.current.force("links").distance(linkDistance || 1);
+    }, [linkDistance]);
 
     // Runs when onClickNode changes
     useEffect(() => {
