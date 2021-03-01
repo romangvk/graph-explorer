@@ -12,10 +12,11 @@ function App() {
   const [graph, setGraph] = useState(G.addLink(G.addNode(G.create(), 0, 1, 2), 1, 2, 2, 0));
   const nodeRefs = useRef({})
   const addNodeRef = useRef();
+  const [options, setOptions] = useState({ nodeSize: 4, linkWidth: 2, linkDistance: 1 })
 
   return (
     <div className="App">
-      <FloatingPanel title="Nodes" top="1vh" left="1em">
+      <FloatingPanel title="Nodes" top="1em" left="1em">
         <NodeEditor inputRef={addNodeRef}
           action={() => {
             let value = addNodeRef.current.value;
@@ -54,7 +55,7 @@ function App() {
           })}
         </div>
       </FloatingPanel>
-      <FloatingPanel title="Links" top="51vh" left="1em">
+      <FloatingPanel title="Links" bottom="1em" left="1em">
         <LinkEditor nodes={graph.nodes}
           icon={faPlus}
           action={(source, target) => {
@@ -78,16 +79,41 @@ function App() {
         </div>
       </FloatingPanel>
       <FloatingPanel title="Options" bottom="1em" right="1em">
-        Options
+        <input type="range" min="1" max="20" value={options.nodeSize} onInput={(e) => {
+          setOptions({ ...options, nodeSize: e.target.value });
+        }} />
+        <input type="range" min="1" max="10" value={options.linkWidth} onInput={(e) => {
+          setOptions({ ...options, linkWidth: e.target.value });
+        }} />
+        <input type="range" min="1" max="500" value={options.linkDistance} onInput={(e) => {
+          setOptions({ ...options, linkDistance: e.target.value });
+        }} />
       </FloatingPanel>
       <FloatingPanel title="Algorithms" top="1em" right="1em">
-        Algorithms
+        <div className="list">
+          <span>Breadth first search</span>
+          <span>Depth first search</span>
+          <span>Uniform cost search</span>
+          <span>Greedy search</span>
+          <span>A star search</span>
+        </div>
       </FloatingPanel>
       <GraphDisplay nodes={graph.nodes} links={graph.links}
+        nodeSize={options.nodeSize}
+        linkWidth={options.linkWidth}
+        linkDistance={options.linkDistance}
         onClickNode={(d) => {
           nodeRefs.current[d.id].focus();
           nodeRefs.current[d.id].select();
           nodeRefs.current[d.id].scrollIntoView();
+          d.fixed = !d.fixed;
+          if (d.fixed) {
+            d.fx = d.x;
+            d.fy = d.y;
+          } else {
+            d.fx = null;
+            d.fy = null;
+          }
         }}
       />
     </div >
