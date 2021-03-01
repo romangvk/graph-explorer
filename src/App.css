@@ -1,3 +1,10 @@
+:root {
+    --primary: #2962ff;
+    --primary-lighter: #81d4fa;
+    --primary-lightest: #e3f2fd;
+    --secondary: #FF4081;
+}
+
 .App {
     text-align: center;
     background: white;
@@ -30,7 +37,7 @@ div.list {
     max-height: 50vh;
 }
 
-input {
+input[type=text], select {
     box-sizing: border-box;
     border: 1px solid #777;
     width: 100%;
@@ -43,34 +50,25 @@ input {
     padding: .5em;
 }
 
-input:focus {
+input[type=text]:focus, select:focus {
     outline: none;
+}
+
+input[type=text]:focus {
     border-bottom: .1em solid black;
 }
 
-input::selection {
-    background: #81d4fa;
+input[type=text]::selection {
+    background: var(--primary-lighter);
 }
 
-input::-moz-selection {
-    background: #81d4fa;
+input[type=text]::-moz-selection {
+    background: var(--primary-lighter);
 }
 
-select {
-    box-sizing: border-box;
-    border: 1px solid #777;
+input[type=range] {
+    /* -webkit-appearance: none; */
     width: 100%;
-    font-family: inherit;
-    font-size: smaller;
-    font-weight: bold;
-    background: white;
-    border-radius: .1em;
-    margin: .3em;
-    padding: .5em;
-}
-
-select:focus {
-    outline: none;
 }
 
 .action {
@@ -80,7 +78,7 @@ select:focus {
 }
 
 .action:hover {
-    color: #FF4081;
+    color: var(--secondary);
 }
 
 .action:active {
