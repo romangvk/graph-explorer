@@ -80,6 +80,9 @@ function App() {
       <FloatingPanel title="Options" bottom="1em" right="1em">
         Options
       </FloatingPanel>
+      <FloatingPanel title="Algorithms" top="1em" right="1em">
+        Algorithms
+      </FloatingPanel>
       <GraphDisplay nodes={graph.nodes} links={graph.links}
         onClickNode={(d) => {
           nodeRefs.current[d.id].focus();
