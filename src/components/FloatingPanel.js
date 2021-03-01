@@ -7,7 +7,7 @@ import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 function FloatingPanel({ title, children, top, left, bottom, right }) {
     const [expand, toggleExpand] = useState(true);
     return (
-        <Draggable>
+        <Draggable handle=".floating-panel-title">
             <div className={`floating-panel ${expand ? "floating-panel-max" : "floating-panel-min"}`} style={{ top, left, bottom, right }}>
                 <div className="floating-panel-title">
                     <b>{title}</b>
