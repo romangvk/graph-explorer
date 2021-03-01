@@ -55,7 +55,7 @@ function App() {
           })}
         </div>
       </FloatingPanel>
-      <FloatingPanel title="Links" bottom="1em" left="1em">
+      <FloatingPanel title="Edges" bottom="1em" left="1em">
         <LinkEditor nodes={graph.nodes}
           icon={faPlus}
           action={(source, target) => {
@@ -79,13 +79,16 @@ function App() {
         </div>
       </FloatingPanel>
       <FloatingPanel title="Options" bottom="1em" right="1em">
-        <input type="range" min="1" max="20" value={options.nodeSize} onInput={(e) => {
+        <b>Node size</b>
+        <input type="range" min="1" max="20" step=".1" value={options.nodeSize} onInput={(e) => {
           setOptions({ ...options, nodeSize: e.target.value });
         }} />
-        <input type="range" min="1" max="10" value={options.linkWidth} onInput={(e) => {
+        <b>Edge width</b>
+        <input type="range" min="1" max="10" step=".05" value={options.linkWidth} onInput={(e) => {
           setOptions({ ...options, linkWidth: e.target.value });
         }} />
-        <input type="range" min="1" max="500" value={options.linkDistance} onInput={(e) => {
+        <b>Edge distance</b>
+        <input type="range" min="1" max="1000" step="5" value={options.linkDistance} onInput={(e) => {
           setOptions({ ...options, linkDistance: e.target.value });
         }} />
       </FloatingPanel>
