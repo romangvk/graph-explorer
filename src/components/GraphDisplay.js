@@ -67,7 +67,7 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
         link.exit().transition().ease(d3.easeExpOut).style("opacity", 0).duration(500).remove();
 
         // Create new links
-        link.enter().insert("line", ":first-child").attr("class", "link");
+        link.enter().insert("line", ":first-child").attr("class", "link").attr("stroke-width", linkWidth || 2);
 
         // Draw nodes
         let node = svg.selectAll(".node").data(nodes, (d) => d.id);
@@ -97,7 +97,7 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
                 }));
 
         // Draw circle
-        g.append("circle");
+        g.append("circle").attr("r", nodeSize || 4);
 
         // Draw text
         g.append("text")
