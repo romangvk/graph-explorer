@@ -1,0 +1,16 @@
+.algorithm {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.algorithm>select {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
