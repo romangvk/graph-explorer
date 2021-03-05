@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 function NodeEditor({ change, action, enterAction, value, icon, inputRef }) {
     const enter = (event) => {
         if (event.key === 'Enter') {
-            enterAction ? enterAction() : action();
+            enterAction ? enterAction && enterAction() : action && action();
         }
     }
     return (
@@ -16,8 +16,8 @@ function NodeEditor({ change, action, enterAction, value, icon, inputRef }) {
                 ref={inputRef}
                 value={value}
                 onKeyDown={enter}
-                onChange={change ? (e) => change(e.target.value) : null} />
-            <div className="action"><FontAwesomeIcon icon={icon} fixedWidth onClick={() => action()} /></div>
+                onChange={change && ((e) => change(e.target.value))} />
+            <div className="action"><FontAwesomeIcon icon={icon} fixedWidth onClick={() => action && action()} /></div>
         </div>
     );
 }

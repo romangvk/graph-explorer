@@ -20,7 +20,7 @@ function LinkEditor({ action, icon, nodes }) {
                 {nodes && nodes.map((node, i) => <option key={i} value={node.id}>{node.v}</option>)}
             </select>
             <div className="action"><FontAwesomeIcon icon={icon} fixedWidth
-                onClick={() => action(parseInt(sourceRef.current.value, 10), parseInt(targetRef.current.value, 10))} />
+                onClick={() => action && action(parseInt(sourceRef.current.value, 10), parseInt(targetRef.current.value, 10))} />
             </div>
         </div>
     );
