@@ -4,6 +4,7 @@ import GraphDisplay from './components/GraphDisplay';
 import NodeEditor from './components/NodeEditor';
 import LinkEditor from './components/LinkEditor';
 import Link from './components/Link';
+import Algorithm from './components/Algorithm';
 import * as G from './util/graph';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import FloatingPanel from './components/FloatingPanel';
@@ -94,11 +95,11 @@ function App() {
       </FloatingPanel>
       <FloatingPanel title="Algorithms" top="1em" right="1em">
         <div className="list">
-          <span>Breadth first search</span>
-          <span>Depth first search</span>
-          <span>Uniform cost search</span>
-          <span>Greedy search</span>
-          <span>A star search</span>
+          <Algorithm name="bfs" args={["start", "end"]} nodes={graph.nodes}></Algorithm>
+          <Algorithm name="dfs" args={["start", "end"]} nodes={graph.nodes}></Algorithm>
+          <Algorithm name="uniformcost" args={["start", "end"]} nodes={graph.nodes}></Algorithm>
+          <Algorithm name="greedy" args={["start", "end"]} nodes={graph.nodes}></Algorithm>
+          <Algorithm name="astar" args={["start", "end"]} nodes={graph.nodes}></Algorithm>
         </div>
       </FloatingPanel>
       <GraphDisplay nodes={graph.nodes} links={graph.links}
@@ -106,9 +107,11 @@ function App() {
         linkWidth={options.linkWidth}
         linkDistance={options.linkDistance}
         onClickNode={(d) => {
-          nodeRefs.current[d.id].focus();
-          nodeRefs.current[d.id].select();
-          nodeRefs.current[d.id].scrollIntoView();
+          if (nodeRefs.current[d.id]) {
+            nodeRefs.current[d.id].focus();
+            nodeRefs.current[d.id].select();
+            nodeRefs.current[d.id].scrollIntoView();
+          }
           d.fixed = !d.fixed;
           if (d.fixed) {
             d.fx = d.x;
