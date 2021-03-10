@@ -12,9 +12,10 @@ function Algorithm({ name, action, args, nodes }) {
                 return (
                     <select
                         defaultValue={arg}
+                        key={i}
                         ref={(el) => (inputRefs.current[arg] = el)}>
                         <option disabled hidden>{arg}</option>
-                        {nodes && nodes.map((node, i) => <option key={i} value={node.id}>{node.v}</option>)}
+                        {nodes && nodes.map((node, j) => <option key={j} value={node.id}>{node.v}</option>)}
                     </select>
                 );
             })}
