@@ -67,7 +67,7 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
         link.exit().transition().ease(d3.easeExpOut).style("opacity", 0).duration(500).remove();
 
         // Create new links
-        link.enter().insert("line", ":first-child").attr("class", "link").attr("stroke-width", linkWidth || 2);
+        link.enter().insert("line", ":first-child").attr("class", "link").attr("stroke-width", linkWidth || 2).attr("marker-end", "url(#arrowhead)");
 
         // Draw nodes
         let node = svg.selectAll(".node").data(nodes, (d) => d.id);
@@ -128,7 +128,13 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
         })
     }, [onClickNode])
     return (
-        <svg ref={display} width="100%" height="100%" />
+        <svg ref={display} width="100%" height="100%">
+            <defs>
+                <marker id="arrowhead" className="arrow" markerWidth="4" markerHeight="4" refX="5" refY="2" orient="auto">
+                    <polygon points={"0 0, 4 2, 0 4"} />
+                 </marker>
+            </defs>
+        </svg>
     );
 }
 export default GraphDisplay;

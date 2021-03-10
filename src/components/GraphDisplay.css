@@ -7,6 +7,10 @@ svg {
     stroke: #FF4081;
 }
 
+.arrow {
+    fill: #FF4081;
+}
+
 .node text {
     stroke: black;
     cursor: pointer;
