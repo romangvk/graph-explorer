@@ -25,7 +25,7 @@ function Algorithm({ name, action, args, nodes }) {
                     </select>
                 );
             })}
-            <div className="action"><FontAwesomeIcon icon={faArrowRight} fixedWidth onClick={() => action && action(...argValues.map((value) => parseInt(value, 10)))}/></div>
+            <div className="action"><FontAwesomeIcon icon={faArrowRight} fixedWidth onClick={() => action && action(...argValues.map((value) => parseInt(value, 10)))} /></div>
         </code>
     );
 }

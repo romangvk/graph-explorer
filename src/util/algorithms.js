@@ -28,19 +28,19 @@ export function breadthFirstSearch(start, goal, adjacencyList) {
     trace.set(start, null);
 
     let queue = [start];
-    
+
     // The list of expanded nodes in order of expansion
     let expands = [];
 
     // The path
     let path = [];
 
-    while(queue.length) {
+    while (queue.length) {
         // Take a node from the beginning of the queue
         let currentNode = queue.shift();
-        
+
         // If this is the goal node stop searching
-        if(currentNode === goal) {
+        if (currentNode === goal) {
             path.push(goal);
             break;
         }
@@ -49,9 +49,9 @@ export function breadthFirstSearch(start, goal, adjacencyList) {
         expands.push(currentNode);
 
         // Expand the node
-        for(let target of adjacencyList[currentNode]) {
+        for (let target of adjacencyList[currentNode]) {
             // Only add to the queue if the neighbor node has not been seen
-            if(!trace.has(target)) {
+            if (!trace.has(target)) {
                 // Set the traceback of the neighbor node to the current node
                 trace.set(target, currentNode);
                 // Push the neighbor node to the queue
@@ -59,17 +59,17 @@ export function breadthFirstSearch(start, goal, adjacencyList) {
             }
         }
     }
-    
+
     // Rebuild path backwards from the goal using trace
-    if(path.length) {
-        while(trace.get(path[0]) != null) {
+    if (path.length) {
+        while (trace.get(path[0]) != null) {
             // Add the parent node to the beginning of the path
             path.unshift(trace.get(path[0]));
         }
     }
-    
+
     // Return a list of expands and a list representing the path found
-    return {expands, path};
+    return { expands, path };
 }
 /**
 * Find a path between a start and goal node with depth first search
@@ -84,19 +84,19 @@ export function depthFirstSearch(start, goal, adjacencyList) {
     trace.set(start, null);
 
     let stack = [start];
-    
+
     // The list of expanded nodes in order of expansion
     let expands = [];
 
     // The path
     let path = [];
-    
-    while(stack.length) {
+
+    while (stack.length) {
         // Take a node from the top of the stack
         let currentNode = stack.pop();
-        
+
         // If this is the goal node stop searching
-        if(currentNode === goal) {
+        if (currentNode === goal) {
             path.push(goal);
             break;
         }
@@ -105,9 +105,9 @@ export function depthFirstSearch(start, goal, adjacencyList) {
         expands.push(currentNode);
 
         // Expand the node
-        for(let target of adjacencyList[currentNode]) {
+        for (let target of adjacencyList[currentNode]) {
             // Only add to the stack if the neighbor node has not been seen
-            if(!trace.has(target)) {
+            if (!trace.has(target)) {
                 // Set the traceback of the neighbor node to the current node
                 trace.set(target, currentNode);
                 // Push the neighbor node to the stack
@@ -115,15 +115,15 @@ export function depthFirstSearch(start, goal, adjacencyList) {
             }
         }
     }
-    
+
     // Rebuild path backwards from the goal using trace
-    if(path.length) {
-        while(trace.get(path[0]) != null) {
+    if (path.length) {
+        while (trace.get(path[0]) != null) {
             // Add the parent node to the beginning of the path
             path.unshift(trace.get(path[0]));
         }
     }
-    
+
     // Return a list of expands and a list representing the path found
-    return {expands, path};
+    return { expands, path };
 }

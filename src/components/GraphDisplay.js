@@ -132,7 +132,7 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
             <defs>
                 <marker id="arrowhead" className="arrow" markerWidth="4" markerHeight="4" refX="5" refY="2" orient="auto">
                     <polygon points={"0 0, 4 2, 0 4"} />
-                 </marker>
+                </marker>
             </defs>
         </svg>
     );

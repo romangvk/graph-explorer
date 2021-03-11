@@ -99,12 +99,12 @@ function App() {
       <FloatingPanel title="Algorithms" top="1em" right="1em">
         <div className="list">
           <Algorithm name="bfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
-            if(G.getNode(graph, start) && G.getNode(graph, goal)) {
+            if (G.getNode(graph, start) && G.getNode(graph, goal)) {
               console.log(A.breadthFirstSearch(start, goal, A.getAdjacencyList(graph)));
             }
           }}></Algorithm>
           <Algorithm name="dfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
-            if(G.getNode(graph, start) && G.getNode(graph, goal)) {
+            if (G.getNode(graph, start) && G.getNode(graph, goal)) {
               console.log(A.depthFirstSearch(start, goal, A.getAdjacencyList(graph)));
             }
           }}></Algorithm>
