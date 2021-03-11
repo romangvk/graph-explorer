@@ -31,7 +31,7 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
 
         // Move nodes and links every tick
         force.current.on("tick", function () {
-            svg.selectAll(".link")
+            svg.selectAll("line")
                 .attr("x1", (d) => { return boundX(d.source.x); })
                 .attr("y1", (d) => { return boundY(d.source.y); })
                 .attr("x2", (d) => { return boundX(d.target.x); })
@@ -61,13 +61,16 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
         let svg = d3.select(display.current);
 
         // Draw links
-        let link = svg.selectAll(".link").data(links, (d) => d.id);
+        let link = svg.selectAll("line").data(links, (d) => d.id);
 
         // Animate removed links
         link.exit().transition().ease(d3.easeExpOut).style("opacity", 0).duration(500).remove();
 
         // Create new links
-        link.enter().insert("line", ":first-child").attr("class", "link").attr("stroke-width", linkWidth || 2).attr("marker-end", "url(#arrowhead)");
+        link.enter().insert("line", ":first-child")
+            .attr("stroke-width", linkWidth || 2)
+            .attr("marker-end", "url(#arrow)")
+            .attr("id", (d) => `link-${d.source}-${d.target}`);
 
         // Draw nodes
         let node = svg.selectAll(".node").data(nodes, (d) => d.id);
@@ -117,7 +120,7 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
         d3.select(display.current).selectAll(".node").select("circle").attr("r", nodeSize || 4);
     }, [nodeSize]);
     useEffect(() => {
-        d3.select(display.current).selectAll(".link").attr("stroke-width", linkWidth || 2);
+        d3.select(display.current).selectAll("line").attr("stroke-width", linkWidth || 2);
     }, [linkWidth]);
     useEffect(() => {
         force.current.force("links").distance(linkDistance || 1);
@@ -132,23 +135,34 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
 
     // Animating pathfinding
     useEffect(() => {
+        d3.selectAll(".expanded").attr("r", nodeSize).attr("class", "");
         expands.forEach((id) => {
-            d3.select("#node-" + id).select("circle")
-                .attr("class", "expanded")
-                .attr("r", nodeSize * 1.5);
+            d3.select(`#node-${id}`).select("circle")
+                .attr("class", "expanded");
         });
     }, [expands]);
     useEffect(() => {
-        path.forEach((node) => {
-            d3.select("#node-" + node).select("circle")
-                .attr("class", "path")
-                .attr("r", nodeSize*2);
+        d3.selectAll(".path").attr("class", "");
+        d3.selectAll("line").attr("marker-end", "url(#arrow)");
+        let prev = null;
+        path.forEach((id) => {
+            d3.select(`#node-${id}`).select("circle")
+                .attr("class", "path");
+            if (prev != null) {
+                d3.select(`#link-${prev}-${id}`)
+                    .attr("class", "path")
+                    .attr("marker-end", "url(#path-arrow)");
+            }
+            prev = id;
         });
     }, [path]);
     return (
         <svg ref={display} width="100%" height="100%">
             <defs>
-                <marker id="arrowhead" className="arrow" markerWidth="4" markerHeight="4" refX="5" refY="2" orient="auto">
+                <marker id="arrow" markerWidth="4" markerHeight="4" refX="5" refY="2" orient="auto">
+                    <polygon points={"0 0, 4 2, 0 4"} />
+                </marker>
+                <marker id="path-arrow" markerWidth="4" markerHeight="4" refX="5" refY="2" orient="auto">
                     <polygon points={"0 0, 4 2, 0 4"} />
                 </marker>
             </defs>
