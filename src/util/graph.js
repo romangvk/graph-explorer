@@ -22,8 +22,8 @@ export function addNode(g, ...value) {
 }
 /**
 * Get the value of a node with a certain id
-* @param  {Object} g     The graph
-* @param  {...any} value The value for the node
+* @param  {Object} g  The graph
+* @param  {number} id The value for the node
 * @return {any}       The value for the node
 */
 export function value(g, id) {
