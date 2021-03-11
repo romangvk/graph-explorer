@@ -21,13 +21,13 @@ export function addNode(g, ...value) {
     return { ...g, nodes: [...g.nodes, ...nodes], id, n: g.n + nodes.length };
 }
 /**
-* Get the value of a node with a certain id
+* Returns the node with a certain id
 * @param  {Object} g  The graph
-* @param  {number} id The value for the node
-* @return {any}       The value for the node
+* @param  {number} id The id of the node
+* @return {any}       The node
 */
-export function value(g, id) {
-    return g.nodes.find((node) => node.id === id).v;
+export function getNode(g, id) {
+    return g.nodes.find((node) => node.id === id);
 }
 /**
 * Update a node's value
