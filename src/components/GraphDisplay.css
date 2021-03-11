@@ -1,7 +1,6 @@
 :root {
     --node: var(--secondary);
-    --node-expand: var(--primary-lighter);
-    --node-path: var(--primary);
+    --path: var(--primary);
 }
 
 svg {
@@ -9,11 +8,11 @@ svg {
     overflow: hidden;
 }
 
-.link {
+line {
     stroke: var(--node);
 }
 
-.arrow {
+#arrow {
     fill: var(--node);
 }
 
@@ -35,9 +34,20 @@ svg {
 .node circle:active {
     transform: scale(1.8, 1.8);
 }
-.node circle.expanded {
-    fill: var(--node-expand);
+
+.expanded {
+    transform: scale(2, 2);
 }
-.node circle.path {
-    fill: var(--node-path);
+
+line.path {
+    stroke: var(--path);
+}
+
+circle.path {
+    transform: scale(2, 2);
+    fill: var(--path);
+}
+
+#path-arrow {
+    fill: var(--path);
 }
