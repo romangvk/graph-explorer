@@ -4,7 +4,7 @@ import Draggable from 'react-draggable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
-function FloatingPanel({ title, children, top, left, bottom, right }) {
+function FloatingPanel({ title, children, top, left, bottom, right, disabled }) {
     const [expand, toggleExpand] = useState(true);
     return (
         <Draggable handle=".floating-panel-title">
@@ -17,11 +17,11 @@ function FloatingPanel({ title, children, top, left, bottom, right }) {
                         }} />
                     </div>
                 </div>
-                {expand ? <div className="floating-panel-content">
+                {expand ? <div className="floating-panel-content" disabled={disabled || false}>
                     {children}
                 </div> : null}
             </div>
-        </Draggable>
+        </Draggable >
     );
 }
 export default FloatingPanel;
