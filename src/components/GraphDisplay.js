@@ -2,7 +2,7 @@ import './GraphDisplay.css';
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
-function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDistance }) {
+function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDistance, expands = [], path = [] }) {
     const display = useRef(null);
     const force = useRef(null);
 
@@ -78,6 +78,7 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
         // Create new nodes
         let g = node.enter().append("g")
             .attr("class", "node")
+            .attr("id", (d) => `node-${d.id}`)
             .call(d3.drag()
                 .on("start", (event, d) => {
                     if (!event.active) force.current.alphaTarget(0.3).restart();
@@ -111,6 +112,7 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
         force.current.force("links").links(links);
     }, [nodes, links]);
 
+    // Visual options
     useEffect(() => {
         d3.select(display.current).selectAll(".node").select("circle").attr("r", nodeSize || 4);
     }, [nodeSize]);
@@ -126,7 +128,23 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
         d3.selectAll("g").on("click", (e, d) => {
             onClickNode(d);
         })
-    }, [onClickNode])
+    }, [onClickNode]);
+
+    // Animating pathfinding
+    useEffect(() => {
+        expands.forEach((id) => {
+            d3.select("#node-" + id).select("circle")
+                .attr("class", "expanded")
+                .attr("r", nodeSize * 1.5);
+        });
+    }, [expands]);
+    useEffect(() => {
+        path.forEach((node) => {
+            d3.select("#node-" + node).select("circle")
+                .attr("class", "path")
+                .attr("r", nodeSize*2);
+        });
+    }, [path]);
     return (
         <svg ref={display} width="100%" height="100%">
             <defs>
