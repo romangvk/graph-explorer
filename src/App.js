@@ -8,12 +8,15 @@ import Algorithm from './components/Algorithm';
 import * as G from './util/graph';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import FloatingPanel from './components/FloatingPanel';
+import * as A from './util/algorithms';
+
+const example = G.addLink(G.addNode(G.create(), 0, 1, 2, 3, 4, 5, 6, 7, 8), 0, 1, 0, 2, 2, 4, 2, 6, 1, 3, 1, 5, 3, 7, 4, 8);
 
 function App() {
-  const [graph, setGraph] = useState(G.addLink(G.addNode(G.create(), 0, 1, 2), 1, 2, 2, 0));
-  const nodeRefs = useRef({})
+  const [graph, setGraph] = useState(example);
+  const nodeRefs = useRef({});
   const addNodeRef = useRef();
-  const [options, setOptions] = useState({ nodeSize: 4, linkWidth: 2, linkDistance: 1 })
+  const [options, setOptions] = useState({ nodeSize: 4, linkWidth: 2, linkDistance: 1 });
 
   return (
     <div className="App">
@@ -67,8 +70,8 @@ function App() {
           {graph.links.map((link, i) => {
             let sourceId = link.source.id != null ? link.source.id : link.source;
             let targetId = link.target.id != null ? link.target.id : link.target;
-            let sourceV = link.source.v != null ? link.source.v : G.value(graph, sourceId);
-            let targetV = link.target.v != null ? link.target.v : G.value(graph, targetId);
+            let sourceV = link.source.v != null ? link.source.v : G.getNode(graph, sourceId).v;
+            let targetV = link.target.v != null ? link.target.v : G.getNode(graph, targetId).v;
             return (
               <Link key={i}
                 source={sourceV}
@@ -95,11 +98,19 @@ function App() {
       </FloatingPanel>
       <FloatingPanel title="Algorithms" top="1em" right="1em">
         <div className="list">
-          <Algorithm name="bfs" args={["start", "end"]} nodes={graph.nodes}></Algorithm>
-          <Algorithm name="dfs" args={["start", "end"]} nodes={graph.nodes}></Algorithm>
-          <Algorithm name="uniformcost" args={["start", "end"]} nodes={graph.nodes}></Algorithm>
-          <Algorithm name="greedy" args={["start", "end"]} nodes={graph.nodes}></Algorithm>
-          <Algorithm name="astar" args={["start", "end"]} nodes={graph.nodes}></Algorithm>
+          <Algorithm name="bfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
+            if(G.getNode(graph, start) && G.getNode(graph, goal)) {
+              console.log(A.breadthFirstSearch(start, goal, A.getAdjacencyList(graph)));
+            }
+          }}></Algorithm>
+          <Algorithm name="dfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
+            if(G.getNode(graph, start) && G.getNode(graph, goal)) {
+              console.log(A.depthFirstSearch(start, goal, A.getAdjacencyList(graph)));
+            }
+          }}></Algorithm>
+          <Algorithm name="uniformcost" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
+          <Algorithm name="greedy" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
+          <Algorithm name="astar" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
         </div>
       </FloatingPanel>
       <GraphDisplay nodes={graph.nodes} links={graph.links}
