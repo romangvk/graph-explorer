@@ -17,6 +17,7 @@ function App() {
   const nodeRefs = useRef({});
   const addNodeRef = useRef();
   const [options, setOptions] = useState({ nodeSize: 4, linkWidth: 2, linkDistance: 1 });
+  const [search, setSearch] = useState({ expands: [], path: [] });
 
   return (
     <div className="App">
@@ -99,14 +100,10 @@ function App() {
       <FloatingPanel title="Algorithms" top="1em" right="1em">
         <div className="list">
           <Algorithm name="bfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
-            if (G.getNode(graph, start) && G.getNode(graph, goal)) {
-              console.log(A.breadthFirstSearch(start, goal, A.getAdjacencyList(graph)));
-            }
+            setSearch(A.breadthFirstSearch(start, goal, A.getAdjacencyList(graph)));
           }}></Algorithm>
           <Algorithm name="dfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
-            if (G.getNode(graph, start) && G.getNode(graph, goal)) {
-              console.log(A.depthFirstSearch(start, goal, A.getAdjacencyList(graph)));
-            }
+            setSearch(A.depthFirstSearch(start, goal, A.getAdjacencyList(graph)));
           }}></Algorithm>
           <Algorithm name="uniformcost" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
           <Algorithm name="greedy" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
@@ -132,6 +129,8 @@ function App() {
             d.fy = null;
           }
         }}
+        expands={search.expands}
+        path={search.path}
       />
     </div >
   );
