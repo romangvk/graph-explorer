@@ -1,14 +1,20 @@
+:root {
+    --node: var(--secondary);
+    --node-expand: var(--primary-lighter);
+    --node-path: var(--primary);
+}
+
 svg {
     height: 100%;
     overflow: hidden;
 }
 
 .link {
-    stroke: #FF4081;
+    stroke: var(--node);
 }
 
 .arrow {
-    fill: #FF4081;
+    fill: var(--node);
 }
 
 .node text {
@@ -17,7 +23,7 @@ svg {
 }
 
 .node circle {
-    fill: #FF4081;
+    fill: var(--node);
     cursor: pointer;
     transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
@@ -28,4 +34,10 @@ svg {
 
 .node circle:active {
     transform: scale(1.8, 1.8);
+}
+.node circle.expanded {
+    fill: var(--node-expand);
+}
+.node circle.path {
+    fill: var(--node-path);
 }
