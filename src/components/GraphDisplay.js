@@ -70,7 +70,7 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
         link.enter().insert("line", ":first-child")
             .attr("stroke-width", linkWidth || 2)
             .attr("marker-end", "url(#arrow)")
-            .attr("id", (d) => `link-${d.source}-${d.target}`);
+            .attr("id", (d) => `link-${d.source.id != null ? d.source.id : d.source}-${d.target.id != null ? d.target.id : d.target}`);
 
         // Draw nodes
         let node = svg.selectAll(".node").data(nodes, (d) => d.id);
