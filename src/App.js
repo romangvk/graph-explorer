@@ -20,18 +20,18 @@ function App() {
   const [search, setSearch] = useState({ expands: [], path: [] });
   const [disabled, setDisabled] = useState(false);
 
-  const animateSearch = (search) => {
+  const animateSearch = (results) => {
     setDisabled(true);
     let expands = [];
     let path = [];
     let expandi = 0;
     let pathi = 0;
     let animation = setInterval(() => {
-      if (expandi < search.expands.length) {
-        expands.push(search.expands[expandi++]);
+      if (expandi < results.expands.length) {
+        expands.push(results.expands[expandi++]);
         console.log(expands);
-      } else if (pathi < search.path.length) {
-        path.push(search.path[pathi++]);
+      } else if (pathi < results.path.length) {
+        path.push(results.path[pathi++]);
         console.log(path);
       } else {
         setTimeout(() => {
@@ -130,13 +130,13 @@ function App() {
         <div className="list">
           <Algorithm name="bfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
             if (isNaN(start) || isNaN(goal)) return;
-            let search = A.breadthFirstSearch(start, goal, A.getAdjacencyList(graph));
-            animateSearch(search);
+            let results = A.breadthFirstSearch(start, goal, A.getAdjacencyList(graph));
+            animateSearch(results);
           }}></Algorithm>
           <Algorithm name="dfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
             if (isNaN(start) || isNaN(goal)) return;
-            let search = A.depthFirstSearch(start, goal, A.getAdjacencyList(graph));
-            animateSearch(search);
+            let results = A.depthFirstSearch(start, goal, A.getAdjacencyList(graph));
+            animateSearch(results);
           }}></Algorithm>
           <Algorithm name="uniformcost" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
           <Algorithm name="greedy" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
