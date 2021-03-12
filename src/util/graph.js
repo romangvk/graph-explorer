@@ -136,10 +136,10 @@ export function removeLink(g, ...link) {
         map[source][target] = true;
     }
 
-    // Remove all links
-    let links = g.links.filter((link) =>
-        !(map[link.source.id] && map[link.source.id][link.target.id])
-        && !(map[link.source] && map[link.source][link.target])
+    // Remove all pre-existing links
+    let links = g.links.filter((l) =>
+        !(map[l.source.id] && map[l.source.id][l.target.id])
+        && !(map[l.source] && map[l.source][l.target])
     );
 
     // Return a new graph with the new links in g.links
