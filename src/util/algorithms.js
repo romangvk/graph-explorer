@@ -39,14 +39,14 @@ export function breadthFirstSearch(start, goal, adjacencyList) {
         // Take a node from the beginning of the queue
         let currentNode = queue.shift();
 
+        // Add the node to the list of expanded nodes
+        expands.push(currentNode);
+        
         // If this is the goal node stop searching
         if (currentNode === goal) {
             path.push(goal);
             break;
         }
-
-        // Add the node to the list of expanded nodes
-        expands.push(currentNode);
 
         // Expand the node
         for (let target of adjacencyList[currentNode]) {
