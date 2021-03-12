@@ -16,12 +16,37 @@ function App() {
   const [graph, setGraph] = useState(example);
   const nodeRefs = useRef({});
   const addNodeRef = useRef();
-  const [options, setOptions] = useState({ nodeSize: 4, linkWidth: 2, linkDistance: 1 });
+  const [options, setOptions] = useState({ nodeSize: 4, linkWidth: 2, linkDistance: 1, iterationSpeed: 1500 });
   const [search, setSearch] = useState({ expands: [], path: [] });
+  const [disabled, setDisabled] = useState(false);
+
+  const animateSearch = (search) => {
+    setDisabled(true);
+    let expands = [];
+    let path = [];
+    let expandi = 0;
+    let pathi = 0;
+    let animation = setInterval(() => {
+      if (expandi < search.expands.length) {
+        expands.push(search.expands[expandi++]);
+        console.log(expands);
+      } else if (pathi < search.path.length) {
+        path.push(search.path[pathi++]);
+        console.log(path);
+      } else {
+        setTimeout(() => {
+          setSearch({ expands: [], path: [] });
+          setDisabled(false);
+        }, 2000);
+        clearInterval(animation);
+      }
+      setSearch({ expands: [...expands], path: [...path] });
+    }, 2000 - options.iterationSpeed);
+  }
 
   return (
     <div className="App">
-      <FloatingPanel title="Nodes" top="1em" left="1em">
+      <FloatingPanel title="Nodes" top="1em" left="1em" disabled={disabled}>
         <NodeEditor inputRef={addNodeRef}
           action={() => {
             let value = addNodeRef.current.value;
@@ -60,7 +85,7 @@ function App() {
           })}
         </div>
       </FloatingPanel>
-      <FloatingPanel title="Edges" bottom="1em" left="1em">
+      <FloatingPanel title="Edges" bottom="1em" left="1em" disabled={disabled}>
         <LinkEditor nodes={graph.nodes}
           icon={faPlus}
           action={(source, target) => {
@@ -96,14 +121,22 @@ function App() {
         <input type="range" min="1" max="1000" step="5" value={options.linkDistance} onInput={(e) => {
           setOptions({ ...options, linkDistance: e.target.value });
         }} />
+        <b>Iteration Speed</b>
+        <input type="range" min="0" max="2000" step="5" value={options.iterationSpeed} onInput={(e) => {
+          setOptions({ ...options, iterationSpeed: e.target.value });
+        }} />
       </FloatingPanel>
-      <FloatingPanel title="Algorithms" top="1em" right="1em">
+      <FloatingPanel title="Algorithms" top="1em" right="1em" disabled={disabled}>
         <div className="list">
           <Algorithm name="bfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
-            setSearch(A.breadthFirstSearch(start, goal, A.getAdjacencyList(graph)));
+            if (isNaN(start) || isNaN(goal)) return;
+            let search = A.breadthFirstSearch(start, goal, A.getAdjacencyList(graph));
+            animateSearch(search);
           }}></Algorithm>
           <Algorithm name="dfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
-            setSearch(A.depthFirstSearch(start, goal, A.getAdjacencyList(graph)));
+            if (isNaN(start) || isNaN(goal)) return;
+            let search = A.depthFirstSearch(start, goal, A.getAdjacencyList(graph));
+            animateSearch(search);
           }}></Algorithm>
           <Algorithm name="uniformcost" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
           <Algorithm name="greedy" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
