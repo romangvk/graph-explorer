@@ -55,22 +55,10 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
         resize();
     }, []);
 
-    // Runs when nodes or links change
+    // Runs when nodes change
     useEffect(() => {
         // Svg reference
         let svg = d3.select(display.current);
-
-        // Draw links
-        let link = svg.selectAll("line").data(links, (d) => d.id);
-
-        // Animate removed links
-        link.exit().transition().ease(d3.easeExpOut).style("opacity", 0).duration(500).remove();
-
-        // Create new links
-        link.enter().insert("line", ":first-child")
-            .attr("stroke-width", linkWidth || 2)
-            .attr("marker-end", "url(#arrow)")
-            .attr("id", (d) => `link-${d.source.id != null ? d.source.id : d.source}-${d.target.id != null ? d.target.id : d.target}`);
 
         // Draw nodes
         let node = svg.selectAll(".node").data(nodes, (d) => d.id);
@@ -112,8 +100,32 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
 
         // Reinitialize force
         force.current.nodes(nodes);
+    }, [nodes]);
+
+    // Runs when links change
+    useEffect(() => {
+        // Svg reference
+        let svg = d3.select(display.current);
+        
+        // Draw links
+        let link = svg.selectAll("line").data(links, (d) => d.id);
+
+        // Animate removed links
+        link.exit().transition().ease(d3.easeExpOut).style("opacity", 0).duration(500).remove();
+
+        // Create new links
+        link.enter().insert("line", ":first-child")
+            .attr("stroke-width", linkWidth || 2)
+            .attr("marker-end", "url(#arrow)")
+            .attr("id", (d) => {
+                let sourceId = d.source.id != null ? d.source.id : d.source;
+                let targetId = d.target.id != null ? d.target.id : d.target;
+                return `link-${sourceId}-${targetId}`;
+            });
+
+        // Reinitialize force
         force.current.force("links").links(links);
-    }, [nodes, links]);
+    }, [links]);
 
     // Visual options
     useEffect(() => {
