@@ -1,6 +1,8 @@
 :root {
     --node: var(--secondary);
     --path: var(--primary);
+    --visited: #ffff8d;
+    --outline: black;
 }
 
 svg {
@@ -35,17 +37,29 @@ line {
     transform: scale(1.8, 1.8);
 }
 
-.expanded {
-    transform: scale(2, 2);
+.visited circle {
+    transform: scale(1.5, 1.5);
+    fill: var(--visited);
+    stroke: var(--outline);
 }
 
 line.path {
     stroke: var(--path);
 }
 
-circle.path {
+.path circle {
     transform: scale(2, 2);
     fill: var(--path);
+}
+
+.start circle {
+    stroke: var(--outline);
+    transform: scale(2, 2);
+}
+
+.goal circle {
+    stroke: var(--outline);
+    transform: scale(2, 2);
 }
 
 #path-arrow {
