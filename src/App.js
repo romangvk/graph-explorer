@@ -14,34 +14,103 @@ const example = G.addLink(G.addNode(G.create(), 0, 1, 2, 3, 4, 5, 6, 7, 8), 0, 1
 
 function App() {
   const [graph, setGraph] = useState(example);
+  const addNode = () => {
+    let value = addNodeRef.current.value;
+    if (value === "" || G.contains(graph, value)) {
+      console.log("Must be a new value");
+    } else {
+      setGraph((old) => G.addNode(old, value));
+      addNodeRef.current.value = "";
+    }
+    addNodeRef.current.focus();
+  }
+  const removeNode = (id) => {
+    setGraph((old) => G.removeNode(old, id))
+  }
+  const updateNode = (id, v) => {
+    G.contains(graph, v) ?
+      setGraph((old) => { return { ...old } })
+      :
+      setGraph((old) => G.updateNode(old, id, v));
+  }
+  const addEdge = (source, target) => {
+    setGraph((old) => G.addLink(old, source, target));
+  }
+  const removeEdge = (source, target) => {
+    setGraph((old) => G.removeLink(old, source, target));
+  }
   const nodeRefs = useRef({});
   const addNodeRef = useRef();
-  const [options, setOptions] = useState({ nodeSize: 4, linkWidth: 2, linkDistance: 1, iterationSpeed: 1500 });
-  const [search, setSearch] = useState({ expands: [], path: [] });
+  const [options, setOptions] = useState({ nodeSize: 4, linkWidth: 2, linkDistance: 1, iterationSpeed: 500 });
+  const clearSearch = () => {
+    setSearch({ visits: [], path: [], start: null, goal: null });
+  }
   const [disabled, setDisabled] = useState(false);
 
+  const [search, setSearch] = useState({ visits: [], path: [], start: null, goal: null });
+  let startFrame = useRef();
+  let goalFrame = useRef();
+  let visitFrame = useRef();
+  let pathFrame = useRef();
   const animateSearch = (results) => {
     setDisabled(true);
-    let expands = [];
-    let path = [];
-    let expandi = 0;
-    let pathi = 0;
-    let animation = setInterval(() => {
-      if (expandi < results.expands.length) {
-        expands.push(results.expands[expandi++]);
-        console.log(expands);
-      } else if (pathi < results.path.length) {
-        path.push(results.path[pathi++]);
-        console.log(path);
+
+    let last = performance.now();
+
+    let start = results.start;
+    startFrame.current = (timestamp) => {
+      if (timestamp - last > 2000 - options.iterationSpeed) {
+        last = timestamp;
+        setSearch((old) => { return { ...old, start } });
+        requestAnimationFrame(goalFrame.current);
       } else {
-        setTimeout(() => {
-          setSearch({ expands: [], path: [] });
-          setDisabled(false);
-        }, 2000);
-        clearInterval(animation);
+        requestAnimationFrame(startFrame.current);
       }
-      setSearch({ expands: [...expands], path: [...path] });
-    }, 2000 - options.iterationSpeed);
+    }
+    let goal = results.goal;
+    goalFrame.current = (timestamp) => {
+      if (timestamp - last > 2000 - options.iterationSpeed) {
+        last = timestamp;
+        setSearch((old) => { return { ...old, goal } });
+        requestAnimationFrame(visitFrame.current);
+      } else {
+        requestAnimationFrame(goalFrame.current);
+      }
+    }
+    let visits = [];
+    let visiti = 0;
+    visitFrame.current = (timestamp) => {
+      console.log(options.iterationSpeed);
+      if (timestamp - last > 2000 - options.iterationSpeed) {
+        last = timestamp;
+        if (visiti < results.visits.length) {
+          visits.push(results.visits[visiti++]);
+          setSearch((old) => { return { ...old, visits: [...visits] } });
+          requestAnimationFrame(visitFrame.current);
+        } else {
+          requestAnimationFrame(pathFrame.current);
+        }
+      } else {
+        requestAnimationFrame(visitFrame.current);
+      }
+    }
+    let path = [];
+    let pathi = 0;
+    pathFrame.current = (timestamp) => {
+      if (timestamp - last > (2000 - options.iterationSpeed) / 2) {
+        last = timestamp;
+        if (pathi < results.path.length) {
+          path.push(results.path[pathi++]);
+          setSearch((old) => { return { ...old, path: [...path] } });
+          requestAnimationFrame(pathFrame.current);
+        } else {
+          setDisabled(false);
+        }
+      } else {
+        requestAnimationFrame(pathFrame.current);
+      }
+    }
+    requestAnimationFrame(startFrame.current);
   }
 
   return (
@@ -49,14 +118,8 @@ function App() {
       <FloatingPanel title="Nodes" top="1em" left="1em" disabled={disabled}>
         <NodeEditor inputRef={addNodeRef}
           action={() => {
-            let value = addNodeRef.current.value;
-            if (value === "" || G.contains(graph, value)) {
-              console.log("Must be a new value");
-            } else {
-              setGraph((old) => G.addNode(old, value));
-              addNodeRef.current.value = "";
-            }
-            addNodeRef.current.focus();
+            clearSearch();
+            addNode();
           }}
           icon={faPlus} />
         <hr />
@@ -65,12 +128,13 @@ function App() {
             return (
               <NodeEditor key={i} value={node.v} inputRef={(el) => (nodeRefs.current[node.id] = el)}
                 change={(v) => {
-                  G.contains(graph, v) ?
-                    setGraph((old) => { return { ...old } })
-                    :
-                    setGraph((old) => G.updateNode(old, node.id, v))
+                  clearSearch();
+                  updateNode(node.id, v);
                 }}
-                action={() => setGraph((old) => G.removeNode(old, node.id))}
+                action={() => {
+                  clearSearch();
+                  removeNode(node.id);
+                }}
                 enterAction={() => {
                   if (i + 1 < graph.nodes.length) {
                     nodeRefs.current[graph.nodes[i + 1].id].focus();
@@ -89,7 +153,8 @@ function App() {
         <LinkEditor nodes={graph.nodes}
           icon={faPlus}
           action={(source, target) => {
-            setGraph((old) => G.addLink(old, source, target));
+            clearSearch();
+            addEdge(source, target);
           }} />
         <hr />
         <div className="list">
@@ -102,7 +167,10 @@ function App() {
               <Link key={i}
                 source={sourceV}
                 target={targetV}
-                action={() => { setGraph((old) => G.removeLink(old, sourceId, targetId)) }}
+                action={() => {
+                  clearSearch();
+                  removeEdge(sourceId, targetId);
+                }}
                 icon={faTimes} />
             );
           })}
@@ -110,33 +178,34 @@ function App() {
       </FloatingPanel>
       <FloatingPanel title="Options" bottom="1em" right="1em">
         <b>Node size</b>
-        <input type="range" min="1" max="20" step=".1" value={options.nodeSize} onInput={(e) => {
+        <input type="range" min="0" max="20" step=".01" value={options.nodeSize} onInput={(e) => {
           setOptions({ ...options, nodeSize: e.target.value });
         }} />
         <b>Edge width</b>
-        <input type="range" min="1" max="10" step=".05" value={options.linkWidth} onInput={(e) => {
+        <input type="range" min="0" max="10" step=".005" value={options.linkWidth} onInput={(e) => {
           setOptions({ ...options, linkWidth: e.target.value });
         }} />
         <b>Edge distance</b>
-        <input type="range" min="1" max="1000" step="5" value={options.linkDistance} onInput={(e) => {
+        <input type="range" min="0" max="1000" step="1" value={options.linkDistance} onInput={(e) => {
           setOptions({ ...options, linkDistance: e.target.value });
         }} />
         <b>Iteration Speed</b>
-        <input type="range" min="0" max="2000" step="5" value={options.iterationSpeed} onInput={(e) => {
+        <input type="range" min="0" max="2000" step="2" value={options.iterationSpeed} onInput={(e) => {
           setOptions({ ...options, iterationSpeed: e.target.value });
+          console.log(options.iterationSpeed);
         }} />
       </FloatingPanel>
       <FloatingPanel title="Algorithms" top="1em" right="1em" disabled={disabled}>
         <div className="list">
           <Algorithm name="bfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
             if (isNaN(start) || isNaN(goal)) return;
-            let results = A.breadthFirstSearch(start, goal, A.getAdjacencyList(graph));
-            animateSearch(results);
+            clearSearch();
+            animateSearch(A.breadthFirstSearch(start, goal, A.getAdjacencyList(graph)));
           }}></Algorithm>
           <Algorithm name="dfs" args={["start", "goal"]} nodes={graph.nodes} action={(start, goal) => {
             if (isNaN(start) || isNaN(goal)) return;
-            let results = A.depthFirstSearch(start, goal, A.getAdjacencyList(graph));
-            animateSearch(results);
+            clearSearch();
+            animateSearch(A.depthFirstSearch(start, goal, A.getAdjacencyList(graph)));
           }}></Algorithm>
           <Algorithm name="uniformcost" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
           <Algorithm name="greedy" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
@@ -148,6 +217,7 @@ function App() {
         linkWidth={options.linkWidth}
         linkDistance={options.linkDistance}
         onClickNode={(d) => {
+          clearSearch();
           if (nodeRefs.current[d.id]) {
             nodeRefs.current[d.id].focus();
             nodeRefs.current[d.id].select();
@@ -162,8 +232,10 @@ function App() {
             d.fy = null;
           }
         }}
-        expands={search.expands}
+        visits={search.visits}
         path={search.path}
+        start={search.start}
+        goal={search.goal}
       />
     </div >
   );
