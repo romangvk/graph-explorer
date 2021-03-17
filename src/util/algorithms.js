@@ -30,7 +30,7 @@ export function breadthFirstSearch(start, goal, adjacencyList) {
     let queue = [start];
 
     // The list of expanded nodes in order of expansion
-    let expands = [];
+    let visits = [];
 
     // The path
     let path = [];
@@ -40,7 +40,7 @@ export function breadthFirstSearch(start, goal, adjacencyList) {
         let currentNode = queue.shift();
 
         // Add the node to the list of expanded nodes
-        expands.push(currentNode);
+        visits.push(currentNode);
         
         // If this is the goal node stop searching
         if (currentNode === goal) {
@@ -68,8 +68,8 @@ export function breadthFirstSearch(start, goal, adjacencyList) {
         }
     }
 
-    // Return a list of expands and a list representing the path found
-    return { expands, path };
+    // Return a list of visits and a list representing the path found
+    return { visits, path, start, goal };
 }
 /**
 * Find a path between a start and goal node with depth first search
@@ -86,7 +86,7 @@ export function depthFirstSearch(start, goal, adjacencyList) {
     let stack = [start];
 
     // The list of expanded nodes in order of expansion
-    let expands = [];
+    let visits = [];
 
     // The path
     let path = [];
@@ -102,7 +102,7 @@ export function depthFirstSearch(start, goal, adjacencyList) {
         }
 
         // Add the node to the list of expanded nodes
-        expands.push(currentNode);
+        visits.push(currentNode);
 
         // Expand the node
         for (let target of adjacencyList[currentNode]) {
@@ -124,6 +124,6 @@ export function depthFirstSearch(start, goal, adjacencyList) {
         }
     }
 
-    // Return a list of expands and a list representing the path found
-    return { expands, path };
+    // Return a list of visits and a list representing the path found
+    return { visits, path, start, goal };
 }
