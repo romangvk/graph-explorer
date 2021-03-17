@@ -61,7 +61,7 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
         let svg = d3.select(display.current);
 
         // Draw links
-        let link = svg.selectAll("line").data(links, (d) => d.id);
+        let link = svg.selectAll("line").data(links, (d) => `${d.source.id != null ? d.source.id : d.source}-${d.target.id != null ? d.target.id : d.target}`);
 
         // Animate removed links
         link.exit().transition().ease(d3.easeExpOut).style("opacity", 0).duration(500).remove();
