@@ -2,7 +2,7 @@ import './GraphDisplay.css';
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
-function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDistance, expands = [], path = [] }) {
+function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDistance, visits = [], path = [], start = null, goal = null }) {
     const display = useRef(null);
     const force = useRef(null);
 
@@ -117,13 +117,13 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
 
     // Visual options
     useEffect(() => {
-        d3.select(display.current).selectAll(".node").select("circle").attr("r", nodeSize || 4);
+        d3.select(display.current).selectAll(".node").select("circle").attr("r", nodeSize || 0);
     }, [nodeSize]);
     useEffect(() => {
-        d3.select(display.current).selectAll("line").attr("stroke-width", linkWidth || 2);
+        d3.select(display.current).selectAll("line").attr("stroke-width", linkWidth || 0);
     }, [linkWidth]);
     useEffect(() => {
-        force.current.force("links").distance(linkDistance || 1);
+        force.current.force("links").distance(linkDistance || 0);
     }, [linkDistance]);
 
     // Runs when onClickNode changes
@@ -135,27 +135,61 @@ function GraphDisplay({ nodes, links, onClickNode, nodeSize, linkWidth, linkDist
 
     // Animating pathfinding
     useEffect(() => {
-        d3.selectAll(".expanded").attr("r", nodeSize).attr("class", "");
-        expands.forEach((id) => {
-            d3.select(`#node-${id}`).select("circle")
-                .attr("class", "expanded");
+        d3.selectAll(".visited").classed("visited", false);
+        visits.forEach((id) => {
+            d3.select(`#node-${id}`).classed("visited", true);
         });
-    }, [expands]);
+    }, [visits]);
     useEffect(() => {
-        d3.selectAll(".path").attr("class", "");
+        d3.selectAll(".path").classed("path", false);
         d3.selectAll("line").attr("marker-end", "url(#arrow)");
         let prev = null;
         path.forEach((id) => {
-            d3.select(`#node-${id}`).select("circle")
-                .attr("class", "path");
+            d3.select(`#node-${id}`).classed("path", "true");
             if (prev != null) {
                 d3.select(`#link-${prev}-${id}`)
-                    .attr("class", "path")
+                    .classed("path", true)
                     .attr("marker-end", "url(#path-arrow)");
             }
             prev = id;
         });
     }, [path]);
+    useEffect(() => {
+        d3.select(".start").classed("start", false).select("#start")
+            .transition()
+            .ease(d3.easeExpOut)
+            .style("opacity", 0)
+            .duration(500).remove();
+        if (start != null) {
+            d3.select(`#node-${start}`).classed("start", true).append("text")
+                .attr("dx", "-2em")
+                .attr("dy", ".35em")
+                .style("transform", "scale(0, 0)")
+                .transition().ease(d3.easeExpOut)
+                .style("transform", "scale(1, 1)")
+                .duration(500)
+                .text("🏠")
+                .attr("id", "start");
+        }
+    }, [start]);
+    useEffect(() => {
+        d3.select(".goal").classed("goal", false).select("#goal")
+            .transition()
+            .ease(d3.easeExpOut)
+            .style("opacity", 0)
+            .duration(500).remove();
+        if (goal != null) {
+            d3.select(`#node-${goal}`).classed("goal", true).append("text")
+                .attr("dx", "-2em")
+                .attr("dy", ".35em")
+                .style("transform", "scale(0, 0)")
+                .transition().ease(d3.easeExpOut)
+                .style("transform", "scale(1, 1)")
+                .duration(500)
+                .text("🏳️")
+                .attr("id", "goal");
+        }
+    }, [goal]);
     return (
         <svg ref={display} width="100%" height="100%">
             <defs>
