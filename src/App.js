@@ -14,6 +14,7 @@ const example = G.addLink(G.addNode(G.create(), 0, 1, 2, 3, 4, 5, 6, 7, 8), 0, 1
 
 function App() {
   const [graph, setGraph] = useState(example);
+
   const addNode = () => {
     let value = addNodeRef.current.value;
     if (value === "" || G.contains(graph, value)) {
@@ -24,27 +25,29 @@ function App() {
     }
     addNodeRef.current.focus();
   }
+
   const removeNode = (id) => {
     setGraph((old) => G.removeNode(old, id))
   }
+
   const updateNode = (id, v) => {
     G.contains(graph, v) ?
       setGraph((old) => { return { ...old } })
       :
       setGraph((old) => G.updateNode(old, id, v));
   }
+
   const addEdge = (source, target) => {
     setGraph((old) => G.addLink(old, source, target));
   }
+
   const removeEdge = (source, target) => {
     setGraph((old) => G.removeLink(old, source, target));
   }
+
   const nodeRefs = useRef({});
   const addNodeRef = useRef();
   const [options, setOptions] = useState({ nodeSize: 4, linkWidth: 2, linkDistance: 1, iterationSpeed: 500 });
-  const clearSearch = () => {
-    setSearch({ visits: [], path: [], start: null, goal: null });
-  }
   const [disabled, setDisabled] = useState(false);
 
   const [search, setSearch] = useState({ visits: [], path: [], start: null, goal: null });
@@ -52,6 +55,7 @@ function App() {
   let goalFrame = useRef();
   let visitFrame = useRef();
   let pathFrame = useRef();
+
   const animateSearch = (results) => {
     setDisabled(true);
 
@@ -67,6 +71,7 @@ function App() {
         requestAnimationFrame(startFrame.current);
       }
     }
+
     let goal = results.goal;
     goalFrame.current = (timestamp) => {
       if (timestamp - last > 2000 - options.iterationSpeed) {
@@ -77,6 +82,7 @@ function App() {
         requestAnimationFrame(goalFrame.current);
       }
     }
+    
     let visits = [];
     let visiti = 0;
     visitFrame.current = (timestamp) => {
@@ -94,6 +100,7 @@ function App() {
         requestAnimationFrame(visitFrame.current);
       }
     }
+
     let path = [];
     let pathi = 0;
     pathFrame.current = (timestamp) => {
@@ -111,6 +118,10 @@ function App() {
       }
     }
     requestAnimationFrame(startFrame.current);
+  }
+
+  const clearSearch = () => {
+    setSearch({ visits: [], path: [], start: null, goal: null });
   }
 
   return (
@@ -207,9 +218,9 @@ function App() {
             clearSearch();
             animateSearch(A.depthFirstSearch(start, goal, A.getAdjacencyList(graph)));
           }}></Algorithm>
-          <Algorithm name="uniformcost" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
+          {/* <Algorithm name="uniformcost" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
           <Algorithm name="greedy" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
-          <Algorithm name="astar" args={["start", "goal"]} nodes={graph.nodes}></Algorithm>
+          <Algorithm name="astar" args={["start", "goal"]} nodes={graph.nodes}></Algorithm> */}
         </div>
       </FloatingPanel>
       <GraphDisplay nodes={graph.nodes} links={graph.links}
